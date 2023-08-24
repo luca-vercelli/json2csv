@@ -1,0 +1,15 @@
+{
+  "code": 200,
+  "status": "success",
+  "canRead": true,
+  "canWrite": false,
+  "owner": null,
+  "result": {
+    "codice": "27188002",
+    "titolo": "OPERATORE DELL'ABBIGLIAMENTO - CONFEZIONI INDUSTRIALI",
+    "settore": {
+      "codice": "05",
+      "titolo": "Tessile, abbigliamento, calzaturiero e sistema moda"
+    }
+  }
+}

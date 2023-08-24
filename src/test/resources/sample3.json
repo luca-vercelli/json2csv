@@ -1,0 +1,9 @@
+{
+  "code": 200,
+  "status": "success",
+  "canRead": true,
+  "canWrite": false,
+  "owner": null,
+  "friends": ["goofy", "mickey"],
+  "morefriends": ["donald duck", "minnie"]
+}

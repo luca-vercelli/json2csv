@@ -1,14 +1,18 @@
 # json2csv
 json2csv utility written in Java
 
+Java 8+ is required.
+
 Build with:
 
     mvn clean package
 
 Run with:
 
-    java -jar target\json2csv*.jar -o output.csv input.json
+    json2csv -o output.csv input.json
+
+(version number may change of course).
 
 A number of options is supported, you can list them with
 
-    java -jar target\json2csv*.jar -h
+    json2csv -h
