@@ -170,7 +170,8 @@ public class Converter implements Runnable {
 				targetMap.put(nonObjectKey, ((JsonString)value).getString());
 				break;
 			case NUMBER:
-				targetMap.put(nonObjectKey, ((JsonNumber)value).bigDecimalValue());
+				double number = ((JsonNumber)value).doubleValue();
+				targetMap.put(nonObjectKey, new NumberWrapper(number, options.getNumberFormat()));
 				break;
 			case OBJECT:
 				// Subproperties are mapped as new columns in the same row

@@ -1,5 +1,7 @@
 package it.json2csv;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,10 +97,20 @@ public class Options {
     private boolean skipHeader;
 
     @Parameter(
+      names =  {"--number-format"},
+      description = "Format for all numbers",
+      required = false,
+      order = 120
+    )
+    private String numberFormatText = "0.#";
+
+    private NumberFormat numberFormat;
+
+    @Parameter(
       names =  {"--unix"},
       description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"",
       required = false,
-      order = 120
+      order = 130
     )
     private boolean unix;
 
@@ -211,5 +223,20 @@ public class Options {
 
 	public void setSkipHeader(boolean skipHeader) {
 		this.skipHeader = skipHeader;
+	}
+
+	public String getNumberFormatText() {
+		return numberFormatText;
+	}
+
+	public void setNumberFormatText(String numberFormatText) {
+		this.numberFormatText = numberFormatText;
+	}
+
+	public NumberFormat getNumberFormat() {
+    if (numberFormat == null && numberFormatText != null && !numberFormatText.trim().isEmpty()) {
+      numberFormat = new DecimalFormat(numberFormatText);
+    }
+		return numberFormat;
 	}
 }

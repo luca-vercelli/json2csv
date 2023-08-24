@@ -66,12 +66,14 @@ public class ConverterTest {
         List<LinkedHashMap<String, Object>> rows = converter.readData();
         assertEquals(1, rows.size());
         LinkedHashMap<String, Object> row = rows.get(0);
-        assertEquals(5, row.keySet().size());
-        assertEquals(new BigDecimal(200), row.get("code"));
+        assertEquals(6, row.keySet().size());
+        assertEquals(new NumberWrapper(200, options.getNumberFormat()), row.get("code"));
         assertEquals("success", row.get("status"));
         assertEquals(true, row.get("canRead"));
         assertEquals(false, row.get("canWrite"));
         assertEquals("", row.get("owner"));
+
+        // BigDecimal is echoed according locale ? 
     }
 
     @Test

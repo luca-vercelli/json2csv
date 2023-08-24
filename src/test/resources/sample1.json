@@ -3,5 +3,6 @@
   "status": "success",
   "canRead": true,
   "canWrite": false,
-  "owner": null
+  "owner": null,
+  "someDecimal": 100.55
 }
