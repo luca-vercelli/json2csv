@@ -87,6 +87,22 @@ public class Options {
     private Integer maxDepth;
 
     @Parameter(
+      names =  {"--skip-header"},
+      description = "Do not print header",
+      required = false,
+      order = 110
+    )
+    private boolean skipHeader;
+
+    @Parameter(
+      names =  {"--unix"},
+      description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"",
+      required = false,
+      order = 120
+    )
+    private boolean unix;
+
+    @Parameter(
       description = "<input JSON files>",
       required = true,
       variableArity = true
@@ -179,5 +195,21 @@ public class Options {
 
 	public void setVersion(boolean version) {
 		this.version = version;
+	}
+
+	public boolean isUnix() {
+		return unix;
+	}
+
+	public void setUnix(boolean unix) {
+		this.unix = unix;
+	}
+
+	public boolean isSkipHeader() {
+		return skipHeader;
+	}
+
+	public void setSkipHeader(boolean skipHeader) {
+		this.skipHeader = skipHeader;
 	}
 }

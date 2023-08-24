@@ -40,11 +40,23 @@ public class Converter implements Runnable {
 	 */
 	@Override
 	public void run() {
+		handleIsUnixOption();
+	
 		List<LinkedHashMap<String, Object>> dataAsListOfMaps = readData();
 		List<String> headers = new ArrayList<>();
 		List<Object[]> dataAsListOfArrays = new ArrayList<>();
 		arrangeData(dataAsListOfMaps, headers, dataAsListOfArrays);
 		printCSV(dataAsListOfArrays, headers);
+	}
+
+	private void handleIsUnixOption() {
+		if (options.isUnix()) {
+			options.setFieldDelimiter(" ");
+			options.setRecordDelimiter("\n");
+			options.setQuote(null);
+			options.setEscape(null);
+			options.setSkipHeader(true);
+		}
 	}
 
 	/**
@@ -271,7 +283,9 @@ public class Converter implements Runnable {
 
 	void printCSV(List<Object[]> dataAsListOfArrays, List<String> headers) {
 		try (CSVPrinter printer = createCsvPrinter()) {
-			printer.printRecord(headers.toArray());
+			if (!options.isSkipHeader()) {
+				printer.printRecord(headers.toArray());
+			}
 			for (Object[] row: dataAsListOfArrays) {
 				printer.printRecord(row);
 			}

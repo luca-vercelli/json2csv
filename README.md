@@ -44,3 +44,10 @@ A number of options is supported, you can list them with
             Default: -
         --max, --max-depth
             Max depth for JSON objects inspection
+        --skip-header
+            Do not print header
+            Default: false
+        --unix
+            Output suitable for *NIX pipelines. Equivalent to --skip-header -f " "
+            -r "\n" -q "" -e ""
+            Default: false

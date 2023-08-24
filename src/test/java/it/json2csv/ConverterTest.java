@@ -1,12 +1,15 @@
 package it.json2csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
@@ -269,5 +272,28 @@ public class ConverterTest {
         assertTrue(fileContent.contains("data-name,data-surname"));
         assertTrue(fileContent.contains("foo,bar"));
         assertTrue(fileContent.contains("x,y"));
+    }
+    
+    @Test
+    public void testUnix() {
+        setSample("sample-nested-array.json");
+        options.setUnix(true);
+
+        // replace stout for test
+        final PrintStream standardOut = System.out;
+        final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStreamCaptor));
+        try {
+
+            converter.run();
+    
+            String output = outputStreamCaptor.toString().trim();
+
+            assertFalse(output.contains("data-name"));
+            assertEquals("foo bar\nx y", output.trim());
+        } finally {
+            System.setOut(standardOut);
+        }
+
     }
 }
