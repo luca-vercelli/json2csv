@@ -6,11 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -41,7 +40,7 @@ public class Converter implements Runnable {
 	 */
 	@Override
 	public void run() {
-		List<SortedMap<String, Object>> dataAsListOfMaps = readData();
+		List<LinkedHashMap<String, Object>> dataAsListOfMaps = readData();
 		List<String> headers = new ArrayList<>();
 		List<Object[]> dataAsListOfArrays = new ArrayList<>();
 		arrangeData(dataAsListOfMaps, headers, dataAsListOfArrays);
@@ -52,8 +51,8 @@ public class Converter implements Runnable {
 	 * Read all input JSON, parse each of them, then generate a unique list of rows with all of them
 	 * (columns may be different for different rows)
 	 */
-	List<SortedMap<String, Object>> readData() {
-		List<SortedMap<String, Object>> dataAsListOfMaps = new ArrayList<>();
+	List<LinkedHashMap<String, Object>> readData() {
+		List<LinkedHashMap<String, Object>> dataAsListOfMaps = new ArrayList<>();
 		for (String jsonFileName : options.getFiles()) {
 			JsonValue data;
 			try {
@@ -67,7 +66,7 @@ public class Converter implements Runnable {
 				rc = 2;
 				continue;
 			}
-			List<SortedMap<String, Object>> dataAsListOfMapsForFile = json2list(data);
+			List<LinkedHashMap<String, Object>> dataAsListOfMapsForFile = json2list(data);
 			dataAsListOfMaps.addAll(dataAsListOfMapsForFile);
 		}
 		return dataAsListOfMaps;
@@ -119,31 +118,31 @@ public class Converter implements Runnable {
 	 * @param data
 	 * @return
 	 */
-	List<SortedMap<String,Object>> json2list(JsonValue data) {
-		SortedMap<String, Object> l = json2listNoJoin(data, "", 1);
-		List<SortedMap<String, Object>> l2 = fullJoin(l);
+	List<LinkedHashMap<String,Object>> json2list(JsonValue data) {
+		LinkedHashMap<String, Object> l = json2listNoJoin(data, "", 1);
+		List<LinkedHashMap<String, Object>> l2 = fullJoin(l);
 		return l2;
 	}
 
 	/**
 	 * Similar to jsonList, however FULL JOIN is not performed.
-	 * A single JsonObject is always mapped into a single SortedMap.
+	 * A single JsonObject is always mapped into a single LinkedHashMap.
 	 * 
 	 * @param data
 	 * @param prefix
 	 * @param depth
 	 * @return
 	 */
-	SortedMap<String,Object> json2listNoJoin(JsonValue data, String prefix, int depth) {
-		SortedMap<String,Object> targetMap = new TreeMap<>();
+	LinkedHashMap<String,Object> json2listNoJoin(JsonValue data, String prefix, int depth) {
+		LinkedHashMap<String,Object> targetMap = new LinkedHashMap<>();
 		addValue(targetMap, "", data, prefix, depth);
 		return targetMap;
 	}
 
 	/**
-	 * Recursively transoform JsonValue into a SortedMap. FULL JOIN is not performed.
+	 * Recursively transoform JsonValue into a LinkedHashMap. FULL JOIN is not performed.
 	*/
-	private void addValue(SortedMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
+	private void addValue(LinkedHashMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
 		String nonObjectKey = ((prefix + key).isEmpty()) ? "value" : prefix + key;
 		switch (value.getValueType()) {
 			case NULL:
@@ -182,7 +181,7 @@ public class Converter implements Runnable {
 				if (options.getMaxDepth() == null || depth <= options.getMaxDepth()) {
 					List<Map<String,Object>> list = new ArrayList<>();
 					for (JsonValue elem : (JsonArray)value) {
-						SortedMap<String, Object> submap1 = json2listNoJoin((JsonValue)elem, prefix + key, depth + 1);
+						LinkedHashMap<String, Object> submap1 = json2listNoJoin((JsonValue)elem, prefix + key, depth + 1);
 						list.add(submap1);
 					}
 					targetMap.put(prefix + key, list);
@@ -197,8 +196,8 @@ public class Converter implements Runnable {
 	 * @param map
 	 * @return
 	 */
-	List<SortedMap<String, Object>> fullJoin(SortedMap<String, Object> map) {
-		List<SortedMap<String, Object>> ret = new ArrayList<>();
+	List<LinkedHashMap<String, Object>> fullJoin(LinkedHashMap<String, Object> map) {
+		List<LinkedHashMap<String, Object>> ret = new ArrayList<>();
 		boolean foundList = false;
 		for (Map.Entry<String,Object> attribute: map.entrySet()) {
 			if (attribute.getValue() instanceof List) {
@@ -207,7 +206,7 @@ public class Converter implements Runnable {
 					map.put(attribute.getKey(), ""); // replace empty array with ""
 				} else {
 					for (Object x: listAttr) {
-						SortedMap<String, Object> copy = new TreeMap<>(map);
+						LinkedHashMap<String, Object> copy = new LinkedHashMap<>(map);
 						if (x instanceof Map) {
 							// array of objects: attributes become new columns of same map
 							copy.remove(attribute.getKey());
@@ -216,7 +215,7 @@ public class Converter implements Runnable {
 							// any other type, including array
 							copy.put(attribute.getKey(), x);
 						}
-						List<SortedMap<String, Object>> parseNextLists = fullJoin(copy);
+						List<LinkedHashMap<String, Object>> parseNextLists = fullJoin(copy);
 						ret.addAll(parseNextLists);
 					}
 					foundList = true;
@@ -238,12 +237,12 @@ public class Converter implements Runnable {
 	 * @param columns output list of column headers
 	 * @param dataAsListOfArrays output list of arrays
 	 */
-	void arrangeData(List<SortedMap<String, Object>> dataAsListOfMaps, List<String> columns,
+	void arrangeData(List<LinkedHashMap<String, Object>> dataAsListOfMaps, List<String> columns,
 			List<Object[]> dataAsListOfArrays) {
 
 		// calculate columns
-		// the TreeSet should avoid duplicates, while preserving ordering
-		TreeSet<String> columnNames = new TreeSet<>();
+		// the LinkedHashSet should avoid duplicates, while preserving ordering
+		LinkedHashSet<String> columnNames = new LinkedHashSet<>();
 		for (Map<String, Object> map: dataAsListOfMaps) {
 			columnNames.addAll(map.keySet());
 		}

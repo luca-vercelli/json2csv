@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
 
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
@@ -61,9 +60,9 @@ public class ConverterTest {
     @Test
     public void testRead1() throws FileNotFoundException, IOException {
         setSample("sample1.json");
-        List<SortedMap<String, Object>> rows = converter.readData();
+        List<LinkedHashMap<String, Object>> rows = converter.readData();
         assertEquals(1, rows.size());
-        SortedMap<String, Object> row = rows.get(0);
+        LinkedHashMap<String, Object> row = rows.get(0);
         assertEquals(5, row.keySet().size());
         assertEquals(new BigDecimal(200), row.get("code"));
         assertEquals("success", row.get("status"));
@@ -75,9 +74,9 @@ public class ConverterTest {
     @Test
     public void testRead2() throws FileNotFoundException, IOException {
         setSample("sample2.json");
-        List<SortedMap<String, Object>> rows = converter.readData();
+        List<LinkedHashMap<String, Object>> rows = converter.readData();
         assertEquals(1, rows.size());
-        SortedMap<String, Object> row = rows.get(0);
+        LinkedHashMap<String, Object> row = rows.get(0);
         assertEquals(9, row.keySet().size());
         assertEquals("27188002", row.get("result-codice"));
         assertEquals("05", row.get("result-settore-codice"));
@@ -85,19 +84,19 @@ public class ConverterTest {
 
     @Test
     public void testFullJoinNoArray() throws FileNotFoundException, IOException {
-        SortedMap<String, Object> map1 = new TreeMap<>();
+        LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
         map1.put("somestring", "foo");
-        List<SortedMap<String, Object>> fullJoin = converter.fullJoin(map1);
+        List<LinkedHashMap<String, Object>> fullJoin = converter.fullJoin(map1);
         assertEquals(1, fullJoin.size());
         assertEquals(map1, fullJoin.get(0));
     }
 
     @Test
     public void testFullJoin1Array() throws FileNotFoundException, IOException {
-        SortedMap<String, Object> map1 = new TreeMap<>();
+        LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
         map1.put("somestring", "foo");
         map1.put("somearray", List.of("a", "b"));
-        List<SortedMap<String, Object>> fullJoin = converter.fullJoin(map1);
+        List<LinkedHashMap<String, Object>> fullJoin = converter.fullJoin(map1);
         assertEquals(2, fullJoin.size());
         assertEquals(2, fullJoin.get(0).entrySet().size());
         assertEquals("a", fullJoin.get(0).get("somearray"));
@@ -107,12 +106,12 @@ public class ConverterTest {
 
     @Test
     public void testFullJoin3Arrays() throws FileNotFoundException, IOException {
-        SortedMap<String, Object> map1 = new TreeMap<>();
+        LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
         map1.put("somestring", "foo");
         map1.put("array1", List.of("a", "b"));
         map1.put("array2", List.of("c", "d"));
         map1.put("array3", List.of("x", "y", "z"));
-        List<SortedMap<String, Object>> fullJoin = converter.fullJoin(map1);
+        List<LinkedHashMap<String, Object>> fullJoin = converter.fullJoin(map1);
         assertEquals(12, fullJoin.size());
         assertEquals(4, fullJoin.get(0).entrySet().size());
         assertEquals(4, fullJoin.get(11).entrySet().size());
@@ -120,10 +119,10 @@ public class ConverterTest {
 
     @Test
     public void testFullJoinEmptyArray() throws FileNotFoundException, IOException {
-        SortedMap<String, Object> map1 = new TreeMap<>();
+        LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
         map1.put("somestring", "foo");
         map1.put("somearray", new ArrayList<String>());
-        List<SortedMap<String, Object>> fullJoin = converter.fullJoin(map1);
+        List<LinkedHashMap<String, Object>> fullJoin = converter.fullJoin(map1);
         assertEquals(1, fullJoin.size());
         assertEquals(2, fullJoin.get(0).entrySet().size());
         assertEquals("foo", fullJoin.get(0).get("somestring"));
@@ -133,9 +132,9 @@ public class ConverterTest {
     @Test
     public void testRead3() throws FileNotFoundException, IOException {
         setSample("sample3.json");
-        List<SortedMap<String, Object>> rows = converter.readData();
+        List<LinkedHashMap<String, Object>> rows = converter.readData();
         assertEquals(4, rows.size());
-        SortedMap<String, Object> row = rows.get(0);
+        LinkedHashMap<String, Object> row = rows.get(0);
         assertEquals(7, row.keySet().size());
         assertTrue(row.get("friends") instanceof String);
     }
@@ -174,6 +173,11 @@ public class ConverterTest {
         converter.run();
         
         assertTrue(tempFile.length() > 0);
+
+        //check that columns order is preserved
+        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
+        String firstLine = it.nextLine();
+        assertTrue(firstLine.startsWith("code,status,canRead,canWrite,owner"));
     }
 
     @Test
@@ -188,12 +192,7 @@ public class ConverterTest {
 
         converter.run();
         
-        assertTrue(tempFile.length() > 0);
-
-        // If you load whole file in memory you probably get OoM
-        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
-        String firstLine = it.nextLine();
-        assertTrue(firstLine.startsWith("code,status,message,result"));
+        assertTrue(tempFile.length() > 400000000l);
     }
 
     @Test
