@@ -42,10 +42,10 @@ public class Converter implements Runnable {
 	@Override
 	public void run() {
 		List<SortedMap<String, Object>> dataAsListOfMaps = readData();
-		List<String> columns = new ArrayList<>();
+		List<String> headers = new ArrayList<>();
 		List<Object[]> dataAsListOfArrays = new ArrayList<>();
-		arrangeData(dataAsListOfMaps, columns, dataAsListOfArrays);
-		printCSV(dataAsListOfArrays);
+		arrangeData(dataAsListOfMaps, headers, dataAsListOfArrays);
+		printCSV(dataAsListOfArrays, headers);
 	}
 
 	/**
@@ -276,8 +276,9 @@ public class Converter implements Runnable {
 		}
 	}
 
-	void printCSV(List<Object[]> dataAsListOfArrays) {
+	void printCSV(List<Object[]> dataAsListOfArrays, List<String> headers) {
 		try (CSVPrinter printer = createCsvPrinter()) {
+			printer.printRecord(headers.toArray());
 			for (Object[] row: dataAsListOfArrays) {
 				printer.printRecord(row);
 			}

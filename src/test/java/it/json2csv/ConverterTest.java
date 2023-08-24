@@ -135,7 +135,6 @@ public class ConverterTest {
         assertEquals(4, rows.size());
         SortedMap<String, Object> row = rows.get(0);
         assertEquals(7, row.keySet().size());
-        Object s = row.get("friends");
         assertTrue(row.get("friends") instanceof String);
     }
 
@@ -146,16 +145,18 @@ public class ConverterTest {
 
         options.setOutput(tempFile.getAbsolutePath());
 
+        List<String> headers = List.of("first", "second", "third");
         assertNotNull(converter.createCsvPrinter());
 
         List<Object[]> data = new ArrayList<>();
         data.add(new Object[]{ "a", 1, "c"});
         data.add(new Object[]{ "A,B", 2, "C"});
 
-        converter.printCSV(data);
+        converter.printCSV(data, headers);
 
         assertTrue(tempFile.length() > 0);
         String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertTrue(fileContent.contains("first,second,third"));
         assertTrue(fileContent.contains("a,1,c"));
         assertTrue(fileContent.contains("\"A,B\",2,C")); // MINIMAL quote mode
     }
