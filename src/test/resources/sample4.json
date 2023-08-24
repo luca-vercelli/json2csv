@@ -1,0 +1,24 @@
+{
+  "code": 200,
+  "status": "success",
+  "canRead": true,
+  "canWrite": false,
+  "owner": null,
+  "results": [
+    {
+      "code": 1,
+      "ada": [
+        {
+          "code": 11
+        },
+        {
+          "code": 22
+        }
+      ]
+    },
+    {
+      "code": 2,
+      "ada": []
+    }
+  ]
+}

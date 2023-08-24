@@ -124,9 +124,9 @@ public class ConverterTest {
         map1.put("somearray", new ArrayList<String>());
         List<LinkedHashMap<String, Object>> fullJoin = converter.fullJoin(map1);
         assertEquals(1, fullJoin.size());
-        assertEquals(2, fullJoin.get(0).entrySet().size());
+        assertEquals(1, fullJoin.get(0).entrySet().size());
         assertEquals("foo", fullJoin.get(0).get("somestring"));
-        assertEquals("", fullJoin.get(0).get("somearray"));
+        assertEquals(null, fullJoin.get(0).get("somearray"));
     }
 
     @Test

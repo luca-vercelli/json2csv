@@ -197,13 +197,18 @@ public class Converter implements Runnable {
 	 * @return
 	 */
 	List<LinkedHashMap<String, Object>> fullJoin(LinkedHashMap<String, Object> map) {
+
+		// This method must handle three cases:
+		// 1. map does not contain any list attribute -> just return the map
+		// 2. map contains one non empty lists -> perform full join on that list (then repeat recursively for other list attributes)
+		// 3. map contains one empty list -> remove the attribute (then repeat recursively for other list attributes)
 		List<LinkedHashMap<String, Object>> ret = new ArrayList<>();
 		boolean foundList = false;
 		for (Map.Entry<String,Object> attribute: map.entrySet()) {
 			if (attribute.getValue() instanceof List) {
 				List<?> listAttr = (List<?>) attribute.getValue();
 				if (listAttr.isEmpty()) {
-					map.put(attribute.getKey(), ""); // replace empty array with ""
+					map.remove(attribute.getKey());
 				} else {
 					for (Object x: listAttr) {
 						LinkedHashMap<String, Object> copy = new LinkedHashMap<>(map);
