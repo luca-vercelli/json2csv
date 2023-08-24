@@ -203,4 +203,66 @@ public class ConverterTest {
         
         assertTrue(tempFile.length() < 6000);
     }
+
+    @Test
+    public void testE2Enull() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-null.json");
+        options.setOutput(tempFile.getAbsolutePath());
+
+        converter.run();
+    
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertTrue(fileContent.contains("value"));
+        assertTrue(fileContent.contains("\"\"")); // MINIMAL quote mode + null is represented as ""
+    }
+
+    @Test
+    public void testE2Estring() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-string.json");
+        options.setOutput(tempFile.getAbsolutePath());
+
+        converter.run();
+    
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertTrue(fileContent.contains("value"));
+        assertTrue(fileContent.contains("hello"));
+    }
+
+    @Test
+    public void testE2Earray() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-array.json");
+        options.setOutput(tempFile.getAbsolutePath());
+
+        converter.run();
+    
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertTrue(fileContent.contains("name,surname"));
+        assertTrue(fileContent.contains("foo,bar"));
+        assertTrue(fileContent.contains("x,y"));
+    }
+
+    @Test
+    public void testE2EnestedArray() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-nested-array.json");
+        options.setOutput(tempFile.getAbsolutePath());
+
+        converter.run();
+    
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertTrue(fileContent.contains("data-name,data-surname"));
+        assertTrue(fileContent.contains("foo,bar"));
+        assertTrue(fileContent.contains("x,y"));
+    }
 }

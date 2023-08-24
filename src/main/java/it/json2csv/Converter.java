@@ -120,7 +120,7 @@ public class Converter implements Runnable {
 	 * @return
 	 */
 	List<SortedMap<String,Object>> json2list(JsonValue data) {
-		SortedMap<String, Object> l = json2listNoJoin(data, true, "", 1);
+		SortedMap<String, Object> l = json2listNoJoin(data, "", 1);
 		List<SortedMap<String, Object>> l2 = fullJoin(l);
 		return l2;
 	}
@@ -130,12 +130,11 @@ public class Converter implements Runnable {
 	 * A single JsonObject is always mapped into a single SortedMap.
 	 * 
 	 * @param data
-	 * @param root
 	 * @param prefix
 	 * @param depth
 	 * @return
 	 */
-	SortedMap<String,Object> json2listNoJoin(JsonValue data, boolean root, String prefix, int depth) {
+	SortedMap<String,Object> json2listNoJoin(JsonValue data, String prefix, int depth) {
 		SortedMap<String,Object> targetMap = new TreeMap<>();
 		addValue(targetMap, "", data, prefix, depth);
 		return targetMap;
@@ -145,21 +144,22 @@ public class Converter implements Runnable {
 	 * Recursively transoform JsonValue into a SortedMap. FULL JOIN is not performed.
 	*/
 	private void addValue(SortedMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
+		String nonObjectKey = ((prefix + key).isEmpty()) ? "value" : prefix + key;
 		switch (value.getValueType()) {
 			case NULL:
-				targetMap.put(prefix + key, "");
+				targetMap.put(nonObjectKey, "");
 				break;
 			case TRUE:
-				targetMap.put(prefix + key, true);
+				targetMap.put(nonObjectKey, true);
 				break;
 			case FALSE:
-				targetMap.put(prefix + key, false);
+				targetMap.put(nonObjectKey, false);
 				break;
 			case STRING:
-				targetMap.put(prefix + key, ((JsonString)value).getString());
+				targetMap.put(nonObjectKey, ((JsonString)value).getString());
 				break;
 			case NUMBER:
-				targetMap.put(prefix + key, ((JsonNumber)value).bigDecimalValue());
+				targetMap.put(nonObjectKey, ((JsonNumber)value).bigDecimalValue());
 				break;
 			case OBJECT:
 				// Subproperties are mapped as new columns in the same row
@@ -182,7 +182,7 @@ public class Converter implements Runnable {
 				if (options.getMaxDepth() == null || depth <= options.getMaxDepth()) {
 					List<Map<String,Object>> list = new ArrayList<>();
 					for (JsonValue elem : (JsonArray)value) {
-						SortedMap<String, Object> submap1 = json2listNoJoin((JsonValue)elem, false, prefix + key, depth + 1);
+						SortedMap<String, Object> submap1 = json2listNoJoin((JsonValue)elem, prefix + key, depth + 1);
 						list.add(submap1);
 					}
 					targetMap.put(prefix + key, list);
