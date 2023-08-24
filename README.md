@@ -3,7 +3,7 @@ json2csv utility written in Java
 
 I have tried a lot of online JSON->CSV converters, and most of them produce unreadable output in presence of FULL JOIN of list attributes. We try to do better.
 
-Java 8+ is required.
+Java 11+ is required.
 
 Build with:
 
