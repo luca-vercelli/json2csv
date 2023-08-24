@@ -22,6 +22,7 @@ import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ConverterTest {
@@ -172,5 +173,34 @@ public class ConverterTest {
         converter.run();
         
         assertTrue(tempFile.length() > 0);
+    }
+
+    @Test
+    @Disabled
+    // this will take 5-10 sec
+    public void testE2ELarge() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-large.json");
+        options.setOutput(tempFile.getAbsolutePath());
+
+        converter.run();
+        
+        assertTrue(tempFile.length() > 0);
+    }
+
+    @Test
+    public void testMaxDepth() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-large.json");
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setMaxDepth(2);
+
+        converter.run();
+        
+        assertTrue(tempFile.length() < 6000);
     }
 }
