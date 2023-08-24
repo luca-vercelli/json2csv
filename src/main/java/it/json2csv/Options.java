@@ -68,6 +68,13 @@ public class Options {
     )
     private List<String> files = new ArrayList<>();
 
+    @Parameter(
+      names =  {"--max", "--max-depth"},
+      description = "Max depth for objects inspection",
+      required = false
+    )
+    private Integer maxDepth;
+
     public String getOutput() {
         return output;
     }
@@ -138,5 +145,13 @@ public class Options {
 
     public void setAttributeSeparator(String attributeSeparator) {
         this.attributeSeparator = attributeSeparator;
+    }
+
+    public Integer getMaxDepth() {
+        return maxDepth;
+    }
+
+    public void setMaxDepth(Integer maxDepth) {
+        this.maxDepth = maxDepth;
     }
 }

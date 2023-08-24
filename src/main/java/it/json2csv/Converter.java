@@ -120,87 +120,76 @@ public class Converter implements Runnable {
 	 * @return
 	 */
 	List<SortedMap<String,Object>> json2list(JsonValue data) {
-		return json2list(data, true, "");
+		SortedMap<String, Object> l = json2listNoJoin(data, true, "", 1);
+		List<SortedMap<String, Object>> l2 = fullJoin(l);
+		return l2;
 	}
 
-	List<SortedMap<String,Object>> json2list(JsonValue data, boolean root, String prefix) {
-		String doublePrefix = root ? "value" : "";
-	 
-		// if object is not an array, the resulting Excel could have a single line
-		List<SortedMap<String,Object>> ret = new ArrayList<>();
-		switch (data.getValueType()) {
-			case ARRAY:
-				for (JsonValue elem : (JsonArray)data) {
-					ret.addAll(json2list(elem));
-				}
-				break;
+	/**
+	 * Similar to jsonList, however FULL JOIN is not performed.
+	 * A single JsonObject is always mapped into a single SortedMap.
+	 * 
+	 * @param data
+	 * @param root
+	 * @param prefix
+	 * @param depth
+	 * @return
+	 */
+	SortedMap<String,Object> json2listNoJoin(JsonValue data, boolean root, String prefix, int depth) {
+		SortedMap<String,Object> targetMap = new TreeMap<>();
+		addValue(targetMap, "", data, prefix, depth);
+		return targetMap;
+	}
+
+	/**
+	 * Recursively transoform JsonValue into a SortedMap. FULL JOIN is not performed.
+	*/
+	private void addValue(SortedMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
+		switch (value.getValueType()) {
 			case NULL:
-				ret.add(sortedMapOf(prefix + doublePrefix, "")); // null as an empy line, ok ?
+				targetMap.put(prefix + key, "");
+				break;
 			case TRUE:
-				ret.add(sortedMapOf(prefix + doublePrefix, true));
+				targetMap.put(prefix + key, true);
 				break;
 			case FALSE:
-				ret.add(sortedMapOf(prefix + doublePrefix, false));
+				targetMap.put(prefix + key, false);
 				break;
 			case STRING:
-				ret.add(sortedMapOf(prefix + doublePrefix, ((JsonString)data).getString()));
+				targetMap.put(prefix + key, ((JsonString)value).getString());
 				break;
 			case NUMBER:
-				ret.add(sortedMapOf(prefix + doublePrefix, ((JsonNumber)data).bigDecimalValue()));
+				targetMap.put(prefix + key, ((JsonNumber)value).bigDecimalValue());
 				break;
 			case OBJECT:
-				// This is the interesting case
-				SortedMap<String, Object> map = mapObjectS1((JsonObject)data, prefix);
-				List<SortedMap<String, Object>> map2 = fullJoin(map);
-				ret.addAll(map2);
-		}
-		return ret;
-	}
-
-	// Similar to Map.of, returning a SortedMap
-	SortedMap<String, Object> sortedMapOf(String key, Object value) {
-		TreeMap<String, Object> map = new TreeMap<>();
-		map.put(key, value);
-		return map;
-	}
-
-	SortedMap<String, Object> mapObjectS1(JsonObject data, String prefix) {
-		SortedMap<String, Object> ret = new TreeMap<>(); // keep ordering
-		for (Map.Entry<String, JsonValue> entry : data.entrySet()) {
-			String key = entry.getKey();
-			JsonValue v = entry.getValue();
-			switch (v.getValueType()) {
-				case NULL:
-					ret.put(prefix + key, "");
-					break;
-				case TRUE:
-					ret.put(prefix + key, true);
-					break;
-				case FALSE:
-					ret.put(prefix + key, false);
-					break;
-				case STRING:
-					ret.put(prefix + key, ((JsonString)v).getString());
-					break;
-				case NUMBER:
-					ret.put(prefix + key, ((JsonNumber)v).bigDecimalValue());
-					break;
-				case OBJECT:
-					// Subroperties are mapped as new columns in the same row
-					Map<String, Object> submap = mapObjectS1((JsonObject)v, prefix + key + options.getAttributeSeparator());
-					ret.putAll(submap);
-					break;
-				case ARRAY:
-					// So far, we map arrays to List's.
-					List<Map<String,Object>> list = new ArrayList<>();
-					for (JsonValue elem : (JsonArray)v) {
-						List<SortedMap<String, Object>> submap1 = json2list((JsonValue)elem, false, prefix + key);
-						list.addAll(submap1);
+				// Subproperties are mapped as new columns in the same row
+				if (options.getMaxDepth() == null || depth <= options.getMaxDepth()) {
+					for (Map.Entry<String, JsonValue> entry : ((JsonObject)value).entrySet()) {
+						String k = entry.getKey();
+						JsonValue v = entry.getValue();
+						String newPrefix = prefix + key;
+						if (!newPrefix.isEmpty()) {
+							newPrefix += options.getAttributeSeparator();
+						}
+						addValue(targetMap, k, v, newPrefix, depth + 1);
 					}
-					ret.put(prefix + key, list);
-			}
+				} else {
+					targetMap.put(prefix + key, "[object]");
+				}
+				break;
+			case ARRAY:
+				// Array entries are put into a single List.
+				if (options.getMaxDepth() == null || depth <= options.getMaxDepth()) {
+					List<Map<String,Object>> list = new ArrayList<>();
+					for (JsonValue elem : (JsonArray)value) {
+						SortedMap<String, Object> submap1 = json2listNoJoin((JsonValue)elem, false, prefix + key, depth + 1);
+						list.add(submap1);
+					}
+					targetMap.put(prefix + key, list);
+				} else {
+					targetMap.put(prefix + key, "[array]");
+				}
 		}
-		return ret;
 	}
 
 	/**
