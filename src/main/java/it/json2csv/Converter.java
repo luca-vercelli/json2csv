@@ -194,7 +194,7 @@ public class Converter implements Runnable {
 					// So far, we map arrays to List's.
 					List<Map<String,Object>> list = new ArrayList<>();
 					for (JsonValue elem : (JsonArray)v) {
-						List<SortedMap<String, Object>> submap1 = json2list((JsonValue)elem, false, prefix + key + options.getAttributeSeparator());
+						List<SortedMap<String, Object>> submap1 = json2list((JsonValue)elem, false, prefix + key);
 						list.addAll(submap1);
 					}
 					ret.put(prefix + key, list);
@@ -214,21 +214,25 @@ public class Converter implements Runnable {
 		for (Map.Entry<String,Object> attribute: map.entrySet()) {
 			if (attribute.getValue() instanceof List) {
 				List<?> listAttr = (List<?>) attribute.getValue();
-				for (Object x: listAttr) {
-					SortedMap<String, Object> copy = new TreeMap<>(map);
-					if (x instanceof Map) {
-						// array di oggetti: le colonne diventano nuove colonne della mappa
-						copy.remove(attribute.getKey());
-						copy.putAll((Map)x);
-					} else {
-						// qualsiasi altra cosa, anche array
-						copy.put(attribute.getKey(), x);
+				if (listAttr.isEmpty()) {
+					map.put(attribute.getKey(), ""); // replace empty array with ""
+				} else {
+					for (Object x: listAttr) {
+						SortedMap<String, Object> copy = new TreeMap<>(map);
+						if (x instanceof Map) {
+							// array of objects: attributes become new columns of same map
+							copy.remove(attribute.getKey());
+							copy.putAll((Map)x);
+						} else {
+							// any other type, including array
+							copy.put(attribute.getKey(), x);
+						}
+						List<SortedMap<String, Object>> parseNextLists = fullJoin(copy);
+						ret.addAll(parseNextLists);
 					}
-					List<SortedMap<String, Object>> parseNextLists = fullJoin(copy);
-					ret.addAll(parseNextLists);
+					foundList = true;
+					break;
 				}
-				foundList = true;
-				break;
 			}
 		}
 		if (!foundList) {
