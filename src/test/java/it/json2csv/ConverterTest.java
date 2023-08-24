@@ -21,6 +21,7 @@ import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -188,6 +189,11 @@ public class ConverterTest {
         converter.run();
         
         assertTrue(tempFile.length() > 0);
+
+        // If you load whole file in memory you probably get OoM
+        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
+        String firstLine = it.nextLine();
+        assertTrue(firstLine.startsWith("code,status,message,result"));
     }
 
     @Test
