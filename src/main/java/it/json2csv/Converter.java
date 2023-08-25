@@ -2,7 +2,6 @@ package it.json2csv;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +17,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 
 public class Converter implements Runnable {
 
@@ -42,11 +38,16 @@ public class Converter implements Runnable {
 	public void run() {
 		handleIsUnixOption();
 	
+		// Read all JSON files and transform into a single list of maps
 		List<LinkedHashMap<String, Object>> dataAsListOfMaps = readData();
+
+		// convert list of maps into list of arrays
 		List<String> headers = new ArrayList<>();
 		List<Object[]> dataAsListOfArrays = new ArrayList<>();
 		arrangeData(dataAsListOfMaps, headers, dataAsListOfArrays);
-		printCSV(dataAsListOfArrays, headers);
+
+		// print to CSV
+		print(headers, dataAsListOfArrays);
 	}
 
 	private void handleIsUnixOption() {
@@ -82,30 +83,6 @@ public class Converter implements Runnable {
 			dataAsListOfMaps.addAll(dataAsListOfMapsForFile);
 		}
 		return dataAsListOfMaps;
-	}
-
-	CSVPrinter createCsvPrinter() throws IOException {
-		CSVFormat format = createCsvFormat();
-		Appendable appendable = createAppendable();
-		return new CSVPrinter(appendable, format);
-	}
-
-	Appendable createAppendable() throws IOException {
-		if (options.getOutput() == null || options.getOutput().trim().isEmpty()) {
-			return System.out;
-		} else {
-			return new FileWriter(options.getOutput(), options.isAppend());
-		}
-	}
-
-	CSVFormat createCsvFormat() {
-		CSVFormat format = CSVFormat.Builder.create()
-			.setDelimiter(options.getFieldDelimiter())
-			.setRecordSeparator(options.getRecordDelimiter())
-			.setQuote(options.getQuote())
-			.setEscape(options.getEscape())
-			.build();
-		return format;
 	}
 
 	JsonValue jsonFromFile(String filename) throws FileNotFoundException, IOException {
@@ -282,17 +259,14 @@ public class Converter implements Runnable {
 		}
 	}
 
-	void printCSV(List<Object[]> dataAsListOfArrays, List<String> headers) {
-		try (CSVPrinter printer = createCsvPrinter()) {
-			if (!options.isSkipHeader()) {
-				printer.printRecord(headers.toArray());
-			}
-			for (Object[] row: dataAsListOfArrays) {
-				printer.printRecord(row);
-			}
-		} catch (IOException e1) {
-			System.err.println("Exception writing CSV file :" + e1.getMessage());
-			this.rc = 10;
+	void print(List<String> headers, List<Object[]> dataAsListOfArrays) {
+		Printer printer;
+		try {
+			printer = new Printer(options);
+			printer.printCSV(dataAsListOfArrays, headers);
+		} catch (IOException e) {
+			System.err.println("Error printing CSV: " + e.getMessage());
+			rc = 33;
 		}
 	}
 }
