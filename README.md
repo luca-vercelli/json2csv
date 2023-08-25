@@ -42,11 +42,17 @@ A number of options is supported, you can list them with
         -n, --nested-attribute-separator
             String used to separate nested attributes in CSV header
             Default: -
-        --max, --max-depth
+        --max-depth
             Max depth for JSON objects inspection
         --skip-header
             Do not print header
             Default: false
+        --number-format
+            Number format for all numbers
+            Default: 0.#
+        -l, --locale
+            Locale, eg. en or en_US, to be used for formatting numbers. This is
+            alternative to --number-format.
         --unix
             Output suitable for *NIX pipelines. Equivalent to --skip-header -f " "
             -r "\n" -q "" -e ""
