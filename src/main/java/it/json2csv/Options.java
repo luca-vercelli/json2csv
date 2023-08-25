@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.beust.jcommander.Parameter;
 
@@ -81,7 +82,7 @@ public class Options {
     private String attributeSeparator = "-";
 
     @Parameter(
-      names =  {"--max", "--max-depth"},
+      names =  {"--max-depth"},
       description = "Max depth for JSON objects inspection",
       required = false,
       order = 100
@@ -98,19 +99,28 @@ public class Options {
 
     @Parameter(
       names =  {"--number-format"},
-      description = "Format for all numbers",
+      description = "Number format for all numbers",
       required = false,
       order = 120
     )
     private String numberFormatText = "0.#";
 
+    @Parameter(
+      names =  {"-l", "--locale"},
+      description = "Locale, eg. en or en_US, to be used for formatting numbers. This is alternative to --number-format.",
+      required = false,
+      order = 130
+    )
+    private String localeText;
+
     private NumberFormat numberFormat;
+    private Locale locale;
 
     @Parameter(
       names =  {"--unix"},
       description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"",
       required = false,
-      order = 130
+      order = 140
     )
     private boolean unix;
 
@@ -230,13 +240,36 @@ public class Options {
 	}
 
 	public void setNumberFormatText(String numberFormatText) {
-		this.numberFormatText = numberFormatText;
+		this.numberFormatText = numberFormatText == null || numberFormatText.isBlank() ? null : numberFormatText;
 	}
 
 	public NumberFormat getNumberFormat() {
-    if (numberFormat == null && numberFormatText != null && !numberFormatText.trim().isEmpty()) {
-      numberFormat = new DecimalFormat(numberFormatText);
+    if (numberFormat == null) {
+
+      if (localeText != null && numberFormatText != null) {
+        System.err.println("Warning! You should only pass one among --locale and --number-format");
+      }
+      numberFormat = locale != null ? NumberFormat.getInstance(locale) : new DecimalFormat(numberFormatText);
     }
 		return numberFormat;
+	}
+
+	public String getLocaleText() {
+		return localeText;
+	}
+
+	public void setLocaleText(String localeText) {
+		this.localeText = localeText == null || localeText.isBlank() ? null : localeText;
+	}
+
+  /**
+   * Return a Locale object built on localeText
+   * @return
+   */
+	public Locale getLocale() {
+    if (locale == null && localeText != null) {
+      locale = new Locale(localeText);
+    }
+		return locale;
 	}
 }

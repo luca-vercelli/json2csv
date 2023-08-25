@@ -72,8 +72,6 @@ public class ConverterTest {
         assertEquals(true, row.get("canRead"));
         assertEquals(false, row.get("canWrite"));
         assertEquals("", row.get("owner"));
-
-        // BigDecimal is echoed according locale ? 
     }
 
     @Test
@@ -142,6 +140,72 @@ public class ConverterTest {
         LinkedHashMap<String, Object> row = rows.get(0);
         assertEquals(7, row.keySet().size());
         assertTrue(row.get("friends") instanceof String);
+    }
+
+    @Test
+    public void testPrintCSVNoHeader() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setSkipHeader(true);
+
+        List<String> headers = List.of("first", "second", "third");
+        assertNotNull(converter.createCsvPrinter());
+
+        List<Object[]> data = new ArrayList<>();
+        data.add(new Object[]{ "a", 1, "c"});
+        data.add(new Object[]{ "A,B", 2, "C"});
+
+        converter.printCSV(data, headers);
+
+        assertTrue(tempFile.length() > 0);
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertFalse(fileContent.contains("first,second,third"));
+        assertTrue(fileContent.contains("a,1,c"));
+        assertTrue(fileContent.contains("\"A,B\",2,C")); // MINIMAL quote mode
+    }
+
+    @Test
+    public void testPrintCSVLocale() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setLocaleText("it_IT");
+
+        List<String> headers = List.of("value");
+        assertNotNull(converter.createCsvPrinter());
+
+        List<Object[]> data = new ArrayList<>();
+        data.add(new Object[]{ 1234.5678 });
+
+        converter.printCSV(data, headers);
+
+        assertTrue(tempFile.length() > 0);
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertFalse(fileContent.contains("1234,5678"));
+    }
+
+    @Test
+    public void testPrintCSVNumberFormat() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setNumberFormatText("0,000,000.000");
+    
+        List<String> headers = List.of("value");
+        assertNotNull(converter.createCsvPrinter());
+
+        List<Object[]> data = new ArrayList<>();
+        data.add(new Object[]{ 1234.5678 });
+
+        converter.printCSV(data, headers);
+
+        assertTrue(tempFile.length() > 0);
+        String fileContent = FileUtils.readFileToString(tempFile, "utf-8");
+        assertFalse(fileContent.contains("1,234.568"));
     }
 
     @Test
@@ -296,6 +360,6 @@ public class ConverterTest {
         } finally {
             System.setOut(standardOut);
         }
-
     }
+
 }

@@ -3,50 +3,68 @@ package it.json2csv;
 import java.text.NumberFormat;
 
 /**
- * Immutable double wrapper endowed with a NumberFormat that influences the behaviour of toString()) method.
+ * Immutable Number wrapper endowed with a NumberFormat that influences the
+ * behaviour of toString()) method.
  */
 public class NumberWrapper extends Number {
-    Double d;
-    NumberFormat nf;
 
-    public NumberWrapper(Number x) {
-        if (x == null) throw new NullPointerException("given null Number");
-        d = x.doubleValue();
-    }
+    /**
+     * Wrapped Number
+     */
+    private Number x;
 
+    /**
+     * NumberFormat used to format this Number
+     */
+    private NumberFormat nf;
+
+    /**
+     * Constructor
+     */
     public NumberWrapper(Number x, NumberFormat nf) {
-        this(x);
+        if (x == null)
+            throw new NullPointerException("given null Number");
+        this.x = x;
+        if (nf == null)
+            throw new NullPointerException("given null NumberFormat");
         this.nf = nf; // can be null
     }
 
+    @Override
+    public byte byteValue() {
+        return x.byteValue();
+    }
 
-	@Override
-	public int intValue() {
-		return d.intValue();
-	}
+    @Override
+    public int intValue() {
+        return x.intValue();
+    }
 
+    @Override
+    public long longValue() {
+        return x.longValue();
+    }
 
-	@Override
-	public long longValue() {
-		return d.longValue();
-	}
+    @Override
+    public float floatValue() {
+        return x.floatValue();
+    }
 
+    @Override
+    public double doubleValue() {
+        return x.doubleValue();
+    }
 
-	@Override
-	public float floatValue() {
-		return d.floatValue();
-	}
-
-
-	@Override
-	public double doubleValue() {
-		return d;
-	}
+    @Override
+    public short shortValue() {
+        return x.shortValue();
+    }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Number)) return false;
-        return d.equals(((Number)other).doubleValue());
+        if (!(other instanceof Number))
+            return false;
+        return doubleValue() == ((Number) other).doubleValue();
     }
 
     /**
@@ -54,6 +72,6 @@ public class NumberWrapper extends Number {
      */
     @Override
     public String toString() {
-        return (nf == null) ? d.toString() : nf.format(this);
+        return nf.format(x);
     }
 }
