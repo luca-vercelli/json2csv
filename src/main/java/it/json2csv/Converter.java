@@ -50,7 +50,7 @@ public class Converter implements Runnable {
 		print(headers, dataAsListOfArrays);
 	}
 
-	private void handleIsUnixOption() {
+	void handleIsUnixOption() {
 		if (options.isUnix()) {
 			options.setFieldDelimiter(" ");
 			options.setRecordDelimiter("\n");
@@ -131,7 +131,7 @@ public class Converter implements Runnable {
 	/**
 	 * Recursively transoform JsonValue into a LinkedHashMap. FULL JOIN is not performed.
 	*/
-	private void addValue(LinkedHashMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
+	void addValue(LinkedHashMap<String, Object> targetMap, String key, JsonValue value, String prefix, int depth) {
 		String nonObjectKey = ((prefix + key).isEmpty()) ? "value" : prefix + key;
 		switch (value.getValueType()) {
 			case NULL:
