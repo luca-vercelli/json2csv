@@ -1,5 +1,6 @@
 #!/bin/bash
 
 VERSION=1.0-SNAPSHOT
+FOLDER=./target/
 
-java -jar target\json2csv-$VERSION.jar "$@"
+java -jar ${FOLDER}json2csv-$VERSION.jar "$@"
