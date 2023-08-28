@@ -1,7 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Apache Maven
-Source: http://maven.apache.org
+Source: https://github.com/luca-vercelli/json2csv/
 
 Files: *
-Copyright: ?
+Copyright: 2023, Luca Vercelli
 License: MIT
