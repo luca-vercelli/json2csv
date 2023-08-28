@@ -21,9 +21,11 @@ Homepage: https://github.com/luca-vercelli/json2csv/
 Package: json2csv
 Architecture: all
 Depends:
- ${maven:Depends},
- ${misc:Depends},
- jarwrapper
+ libcommons-io-java,
+ libcommons-csv-java,
+ libjcommander-java,
+ libjsonp-java,
+ ${misc:Depends}
 Description: CLIS tool for converting JSON files to CSV format
  Take one or more JSON files, outputs a single comma-separated-value file.
  Several options available.
