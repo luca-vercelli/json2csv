@@ -2,3 +2,8 @@
 
 %:
 	dh $@
+
+override_dh_auto_build:
+	# add -P no-fat-jar to standard build
+	dh_auto_build -- package -DskipTests -Dnotimestamp=true -Dlocale=en_US -P no-fat-jar
+

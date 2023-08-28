@@ -1,5 +1,5 @@
 
-it.csi.json2csv json2csv jar * * *
+it.json2csv json2csv jar * * *
 javax.json javax.json-api s/jar/bundle/ s/.*/debian/ * *
 org.glassfish javax.json s/jar/bundle/ s/.*/debian/ * *
 org.apache.maven.plugins maven-enforcer-plugin * s/.*/debian/ * *

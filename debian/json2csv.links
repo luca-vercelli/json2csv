@@ -1,0 +1,8 @@
+#something's wrong here
+
+usr/share/maven-repo/it/json2csv/json2csv/json2csv-1.0.jar usr/share/java/json2csv-1.0.jar
+usr/share/java/json2csv-1.0.jar usr/share/java/json2csv.jar
+
+
+# this is the executable
+usr/share/java/json2csv.jar usr/bin/json2csv

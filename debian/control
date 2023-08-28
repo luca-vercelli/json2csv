@@ -11,8 +11,6 @@ Build-Depends:
  libsurefire-java,
  libmaven-jar-plugin-java,
  maven-debian-helper (>= 2.6~),
- maven-repo-helper (>= 1.1),
- maven-debian-helper,
  libcommons-io-java,
  libcommons-csv-java,
  libjcommander-java,
@@ -23,8 +21,9 @@ Homepage: https://github.com/luca-vercelli/json2csv/
 Package: json2csv
 Architecture: all
 Depends:
- default-jre-headless (>= 2:1.7) | java11-runtime-headless,
- ${misc:Depends}
+ ${maven:Depends},
+ ${misc:Depends},
+ jarwrapper
 Description: CLIS tool for converting JSON files to CSV format
  Take one or more JSON files, outputs a single comma-separated-value file.
  Several options available.
