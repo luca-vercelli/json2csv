@@ -1,0 +1,30 @@
+Source: json2csv
+Section: java
+Priority: optional
+Maintainer: Luca Vercelli <luca.vercelli.to@gmail.com>
+Uploaders:
+ Luca Vercelli <luca.vercelli.to@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ default-jdk,
+ junit5,
+ libmaven-compiler-plugin-java,
+ libmaven-shade-plugin-java,
+ libsurefire-java,
+ libmaven-jar-plugin-java,
+ maven-debian-helper (>= 2.6~),
+ maven-repo-helper (>= 1.1),
+ javahelper,
+ libcommons-io-java,
+ libcommons-csv-java,
+ libjcommander-java,
+ libjackson-json-java
+Standards-Version: 4.5.1
+Homepage: https://github.com/luca-vercelli/json2csv/
+
+Package: json2csv
+Architecture: all
+Depends:
+ default-jre-headless (>= 2:1.7) | java11-runtime-headless
+ ${misc:Depends}
+Description: CLIS tool for converting JSON files to CSV format
