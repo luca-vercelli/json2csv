@@ -51,6 +51,12 @@
 			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.10.0</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -70,6 +76,7 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>fat-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
@@ -95,4 +102,23 @@
 			</plugin>
 		</plugins>
 	</build>
+    <profiles>
+        <profile>
+            <id>no-fat-jar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>fat-jar</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
