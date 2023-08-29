@@ -1,0 +1,8 @@
+The proper way to package this would be:
+- pass -P no-fat-jar to maven build
+- set classpath inside json2csv.sh and run it.json.Main class
+- add ${maven:depends} to control file
+
+Unluckily, we need commons-csv-1.10 and we only have 1.8 packaged
+
+This gives issues with licenses, I guess.
