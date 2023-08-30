@@ -258,7 +258,7 @@ public class ConverterTest {
         
         setSample("sample-nested-2.json");
         options.setOutput(tempFile.getAbsolutePath());
-        options.setRoot("data[0]");
+        options.setRoot("data/0");
 
         converter.run();
         
