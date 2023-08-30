@@ -115,8 +115,32 @@ public class Options {
   private String localeText;
 
   @Parameter( //
+      names = { "-x", "--exclude" }, //
+      description = "List of nodes to exclude", //
+      required = false, //
+      order = 140 //
+  )
+  private List<String> exclude = new ArrayList<>();
+
+  @Parameter( //
+      names = { "--root" }, //
+      description = "JSON root node", //
+      required = false, //
+      order = 150 //
+  )
+  private String root;
+
+  @Parameter( //
+      names = { "-k", "--filter-columns" }, //
+      description = "", //
+      required = false, //
+      order = 160 //
+  )
+  private List<String> outputColumns = new ArrayList<>();
+
+  @Parameter( //
       names = { "--unix" }, //
-      description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"", //
+      description = "", //
       required = false, //
       order = 140 //
   )
@@ -252,6 +276,30 @@ public class Options {
 
   public void setLocaleText(String localeText) {
     this.localeText = localeText == null || localeText.isBlank() ? null : localeText;
+  }
+
+  public List<String> getExclude() {
+    return exclude;
+  }
+
+  public void setExclude(List<String> exclude) {
+    this.exclude = exclude;
+  }
+
+  public String getRoot() {
+    return root;
+  }
+
+  public void setRoot(String root) {
+    this.root = root;
+  }
+
+  public List<String> getOutputColumns() {
+    return outputColumns;
+  }
+
+  public void setOutputColumns(List<String> outputColumns) {
+    this.outputColumns = outputColumns;
   }
 
   // ===== Other methods ===============================================
