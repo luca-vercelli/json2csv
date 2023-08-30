@@ -233,12 +233,16 @@ public class Converter implements Runnable {
 			List<Object[]> dataAsListOfArrays) {
 
 		// calculate columns
-		// the LinkedHashSet should avoid duplicates, while preserving ordering
-		LinkedHashSet<String> columnNames = new LinkedHashSet<>();
-		for (Map<String, Object> map: dataAsListOfMaps) {
-			columnNames.addAll(map.keySet());
+		if (options.getOutputColumns() == null || options.getOutputColumns().isEmpty()) {
+			// the LinkedHashSet should avoid duplicates, while preserving ordering
+			LinkedHashSet<String> columnNames = new LinkedHashSet<>();
+			for (Map<String, Object> map: dataAsListOfMaps) {
+				columnNames.addAll(map.keySet());
+			}
+			columns.addAll(columnNames);
+		} else {
+			columns.addAll(options.getOutputColumns());
 		}
-		columns.addAll(columnNames);
 
 		// calculate reverse map of column indexes
 		Map<String, Integer> columnIndexes = new HashMap<>(columns.size());
@@ -250,7 +254,10 @@ public class Converter implements Runnable {
 		for (Map<String, Object> map: dataAsListOfMaps) {
 			Object[] row = new Object[columns.size()];
 			for (Map.Entry<String,Object> attribute: map.entrySet()) {
-				row[columnIndexes.get(attribute.getKey())] = attribute.getValue();
+				Integer index = columnIndexes.get(attribute.getKey());
+				if (index != null) {
+					row[index] = attribute.getValue();
+				}
 			}
 			dataAsListOfArrays.add(row);
 		}
