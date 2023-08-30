@@ -68,9 +68,6 @@ public class Converter implements Runnable {
 			JsonValue data;
 			try {
 				data = jsonUtil.jsonFromFile(jsonFileName);
-				if (options.getRoot() != null && !options.getRoot().isBlank()) {
-					data = jsonUtil.getRoot(data, options.getRoot());
-				}
 			} catch (FileNotFoundException e) {
 				System.err.println("File does not exist: " + jsonFileName);
 				rc = 1;
@@ -79,6 +76,15 @@ public class Converter implements Runnable {
 				System.err.println("I/O Error while reading file " + jsonFileName + ": " + e.getMessage());
 				rc = 2;
 				continue;
+			}
+
+			if (options.getRoot() != null && !options.getRoot().isBlank()) {
+				data = jsonUtil.getRoot(data, options.getRoot());
+			}
+
+			if (options.getExclude() != null && !options.getExclude().isEmpty()) {
+				for (String path: options.getExclude())
+					data = jsonUtil.removeNode(data, path);
 			}
 			List<LinkedHashMap<String, Object>> dataAsListOfMapsForFile = json2list(data);
 			dataAsListOfMaps.addAll(dataAsListOfMapsForFile);

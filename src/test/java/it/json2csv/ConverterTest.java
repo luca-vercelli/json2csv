@@ -264,12 +264,34 @@ public class ConverterTest {
         
         assertTrue(tempFile.length() > 0);
 
-        //check that columns order is preserved
         LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
         String firstLine = it.nextLine();
         assertEquals("name,surname", firstLine);
         String secondLine = it.nextLine();
         assertEquals("foo,bar", secondLine);
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testE2EExclude() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-nested-2.json");
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setExclude(List.of("data/0/surname", "data/1/value"));
+
+        converter.run();
+        
+        assertTrue(tempFile.length() > 0);
+
+        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
+        String firstLine = it.nextLine();
+        assertEquals("data-name", firstLine);
+        String secondLine = it.nextLine();
+        assertEquals("foo", secondLine);
+        String thirdLine = it.nextLine();
+        assertEquals("x", thirdLine);
         assertFalse(it.hasNext());
     }
 
