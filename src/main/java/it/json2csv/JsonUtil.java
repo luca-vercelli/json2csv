@@ -3,8 +3,8 @@ package it.json2csv;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -23,53 +23,55 @@ public class JsonUtil {
 		}
 		return data;
 	}
-    
-    Pattern patternArray = Pattern.compile("^(\\w+)\\[(\\d+)\\]$");
-    Pattern patternObject = Pattern.compile("^\\w+$");
 
     /**
-     * Estract subtree from given JSON
+     * Estract subtree from given JSON.
+     *
+     * Please notiche that really <i>any</i> character can be used as key in a JSON.
+     * 
      * @param value input JSON
-     * @param root JavaScript-like path inside JSON, e.g. "value.data[4].root"
+     * @param rootPath path inside JSON, in the form
+     * "value/data/4/root/"reàlly&anything:including"quotes//slashes.dots/"
+     * Use "//" to denote a single slash character instead of a separator
      */
-    public JsonValue getRoot(JsonValue value, String root) {
-        String[] paths = root.split("\\.");
-        for (String path: paths) {
-            Matcher matchArray = patternArray.matcher(path);
-            Matcher matchObject = patternObject.matcher(path);
-            if (matchArray.matches()) {
-                JsonValue attr = getObjectAttribute(value, matchArray.group(1));
-                int index = Integer.valueOf(matchArray.group(2));
-                value = getArrayItem(attr, index);
-            } else if (matchObject.matches()) {
-                value = getObjectAttribute(value, path);
+    public JsonValue getRoot(JsonValue value, String rootPath) {
+        if (value == null) {
+            return null;
+        }
+        List<String> ids = extractIdentifiers(rootPath);
+        for (String id: ids) {
+            if (value instanceof JsonObject) {
+                value = ((JsonObject)value).get(id);
+            } else if (value instanceof JsonArray) {
+                int index = Integer.valueOf(id); // may throw NumberFormatException
+                value = ((JsonArray)value).get(index); // may throw IndexOutOfBoundsException
             } else {
-                    throw new IllegalArgumentException("Malformed path: " + root);
+                throw new IllegalArgumentException("rootPath " + rootPath + " expects Object or Array");
+            }
+            if (value == null) {
+                break;
             }
         }
         return value;
     }
 
-    private JsonValue getObjectAttribute(JsonValue object, String attribute) {
-        if (object == null) {
-            return null;
+    List<String> extractIdentifiers(String path) {
+        int lastIndex = 0;
+        List<String> pieces = new ArrayList<>();
+        for (int i = 0; i < path.length(); ++i) {
+            if (path.charAt(i) == '/') {
+                if (path.length() == i + 1 || path.charAt(i + 1) != '/') {
+                    String piece = path.substring(lastIndex, i);
+                    pieces.add(piece.replaceAll("//", "/"));
+                    lastIndex = i + 1;
+                } else if (path.charAt(i + 1) == '/') {
+                    ++i;
+                }
+            } else if (i == path.length() - 1) {
+                String piece = path.substring(lastIndex);
+                pieces.add(piece.replaceAll("//", "/"));
+            }
         }
-        if (object instanceof JsonObject) {
-            return ((JsonObject)object).get(attribute);
-        } else {
-            throw new IllegalArgumentException("Given root expects Object, but it is not");
-        }
-    }
-
-    // may throw IndexOutOfBoundsException
-    private JsonValue getArrayItem(JsonValue object, int index) {
-        if (object == null) {
-            return null;
-        }
-        if (object instanceof JsonArray) {
-            return ((JsonArray)object).get(index);
-        } else {
-            throw new IllegalArgumentException("Given root expects Array, but it is not");
-        }
+        return pieces;
     }
 }

@@ -1,7 +1,6 @@
 package it.json2csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -25,14 +25,34 @@ public class JsonUtilTest {
     JsonUtil util = new JsonUtil();
 
     @Test
-    public void testPatterns() {
-        assertFalse(util.patternObject.matcher("foo[123]").matches());
-        assertTrue(util.patternObject.matcher("foo").matches());
-        assertFalse(util.patternObject.matcher("foo.bar").matches());
+    public void testExtractIdentifiers() {
+        String path;
+        List<String> extracted, expected;
 
-        assertTrue(util.patternArray.matcher("foo[123]").matches());
-        assertFalse(util.patternArray.matcher("foo").matches());
-        assertFalse(util.patternArray.matcher("foo.bar").matches());
+        path = "aaa/bbb/2/ccc";
+        extracted = util.extractIdentifiers(path);
+        expected = List.of("aaa", "bbb", "2", "ccc");
+        assertNotNull(extracted);
+        assertEquals(expected, extracted);
+
+        path = "aaa/bbb//2/ccc";
+        extracted = util.extractIdentifiers(path);
+        expected = List.of("aaa", "bbb/2", "ccc");
+        assertNotNull(extracted);
+        assertEquals(expected, extracted);
+
+        path = "aaa/2:c\u00E0\"@\u00E8::///ccc";
+        extracted = util.extractIdentifiers(path);
+        expected = List.of("aaa", "2:c\u00E0\"@\u00E8::/", "ccc");
+        assertNotNull(extracted);
+        assertEquals(expected, extracted);
+
+        path = "";
+        extracted = util.extractIdentifiers(path);
+        expected = List.of();
+        assertNotNull(extracted);
+        assertEquals(expected, extracted);
+
     }
 
     public String getResourceFileName(String filename) {
@@ -61,11 +81,11 @@ public class JsonUtilTest {
         assertNotNull(response);
         assertTrue(response instanceof JsonArray);
 
-        response = util.getRoot(value, "data[0].name");
+        response = util.getRoot(value, "data/0/name");
         assertNotNull(response);
         assertTrue(response instanceof JsonString);
 
-        response = util.getRoot(value, "data[1].value[1]");
+        response = util.getRoot(value, "data/1/value/1");
         assertNotNull(response);
         assertTrue(response instanceof JsonNumber);
 
@@ -73,38 +93,30 @@ public class JsonUtilTest {
         response = util.getRoot(value, "foo");
         assertNull(response);
 
-        response = util.getRoot(value, "foo.bar[1].foo");
+        response = util.getRoot(value, "foo/bar/1/foo");
         assertNull(response);
     }
 
     @Test
     public void testGetRootErrors() throws FileNotFoundException, IOException {
         JsonValue value = util.jsonFromFile(getResourceFileName("sample-nested-2.json"));
-    
-        //wrong paths give error
-        try {
-            util.getRoot(value, "rvep!rveffd,,ed:");
-            fail("Should give exception: malformed root path");
-        } catch (IllegalArgumentException e) {
-            // ok
-        }
 
         try {
-            util.getRoot(value, "data[0].name[0]");
+            util.getRoot(value, "data/0/name/0");
             fail("Should give exception: not an array");
         } catch (IllegalArgumentException e) {
             // ok
         }
 
         try {
-            util.getRoot(value, "data[0].name.foo");
+            util.getRoot(value, "data/0/name/foo");
             fail("Should give exception: not an object");
         } catch (IllegalArgumentException e) {
             // ok
         }
 
         try {
-            util.getRoot(value, "data[100]");
+            util.getRoot(value, "data/100");
             fail("Should give exception: index out of bounds");
         } catch (IndexOutOfBoundsException e) {
             // ok
