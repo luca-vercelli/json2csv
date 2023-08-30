@@ -337,15 +337,15 @@ public class ConverterTest {
 
         LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
         String firstLine = it.nextLine();
-        assertEquals("data-name", firstLine);
+        assertEquals("data-name,aaaaaaa", firstLine);
         String line = it.nextLine();
-        assertEquals("foo", line);
+        assertEquals("foo,", line);
         line = it.nextLine();
-        assertEquals("x", line);
+        assertEquals("x,", line);
         line = it.nextLine();
-        assertEquals("x", line);
+        assertEquals("x,", line);
         line = it.nextLine();
-        assertEquals("x", line);
+        assertEquals("x,", line);
         assertFalse(it.hasNext());
     }
 
