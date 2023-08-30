@@ -116,15 +116,15 @@ public class Options {
 
   @Parameter( //
       names = { "-x", "--exclude" }, //
-      description = "List of nodes to exclude", //
+      description = "Comma separated list of nodes to exclude. Path expressed in form aaa/bbb/2/ccc", //
       required = false, //
       order = 140 //
   )
-  private List<String> exclude = new ArrayList<>();
+  private List<String> exclude;
 
   @Parameter( //
       names = { "--root" }, //
-      description = "JSON root node", //
+      description = "JSON root node. Path expressed in form aaa/bbb/2/ccc", //
       required = false, //
       order = 150 //
   )
@@ -132,15 +132,15 @@ public class Options {
 
   @Parameter( //
       names = { "-k", "--filter-columns" }, //
-      description = "", //
+      description = "List of columns as they will appear in output file", //
       required = false, //
       order = 160 //
   )
-  private List<String> outputColumns = new ArrayList<>();
+  private List<String> outputColumns;
 
   @Parameter( //
       names = { "--unix" }, //
-      description = "", //
+      description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\" -q \"\" -e \"\"", //
       required = false, //
       order = 135 //
   )
@@ -151,7 +151,7 @@ public class Options {
       required = true, //
       variableArity = true //
   )
-  private List<String> files = new ArrayList<>();
+  private List<String> files;
 
   private NumberFormat numberFormat;
   private Locale locale;

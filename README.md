@@ -56,4 +56,10 @@ A number of options is supported, you can list them with
         --unix
             Output suitable for *NIX pipelines. Equivalent to --skip-header -f " "
             -r "\n" -q "" -e ""
-            Default: false
+        -x, --exclude
+            Comma separated list of nodes to exclude. Path expressed in form 
+            aaa/bbb/2/ccc 
+        --root
+            JSON root node. Path expressed in form aaa/bbb/2/ccc
+        -k, --filter-columns
+            List of columns as they will appear in output file
