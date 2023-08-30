@@ -35,7 +35,7 @@ public class ConverterTest {
     public void setSample(String filename) {
         URL url = Thread.currentThread().getContextClassLoader().getResource(filename);
         jsonFullFilename = url.getPath();
-        options.getFiles().add(jsonFullFilename);
+        options.setFiles(List.of(jsonFullFilename));
     }
 
     @Test
