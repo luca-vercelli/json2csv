@@ -10,240 +10,259 @@ import com.beust.jcommander.Parameter;
 
 public class Options {
 
-    @Parameter(names = {"-h", "--help"},
-            help = true,
-            description = "Displays help information and exit",
-            order = 10
-    )
-    private boolean help;
+  @Parameter( //
+      names = { "-h", "--help" }, //
+      help = true, //
+      description = "Displays help information and exit", //
+      order = 10 //
+  )
+  private boolean help;
 
-    @Parameter(
-      names =  {"-v", "--version"},
-      description = "Print program version and exit",
-      required = false,
-      order = 20
-    )
-    private boolean version;
+  @Parameter( //
+      names = { "-v", "--version" }, //
+      description = "Print program version and exit", //
+      required = false, //
+      order = 20 //
+  )
+  private boolean version;
 
-    @Parameter(
-      names =  {"-o", "--output"},
-      description = "Output file. If none, output will be echoed to stdout",
-      required = false,
-      order = 30
-    )
-    private String output;
+  @Parameter( //
+      names = { "-o", "--output" }, //
+      description = "Output file. If none, output will be echoed to stdout", //
+      required = false, //
+      order = 30 //
+  )
+  private String output;
 
-    @Parameter(
-      names =  {"-a", "--append"},
-      description = "Append to output file instead of overwrite",
-      required = false,
-      order = 40
-    )
-    private boolean append = false;
+  @Parameter( //
+      names = { "-a", "--append" }, //
+      description = "Append to output file instead of overwrite", //
+      required = false, //
+      order = 40 //
+  )
+  private boolean append = false;
 
-    @Parameter(
-      names =  {"-r", "--record-delimiter"},
-      description = "Record delimiter. Default is Windows-style EOL, '\\r\\n'",
-      required = false,
-      order = 50
-    )
-    private String recordDelimiter = "\r\n";
+  @Parameter( //
+      names = { "-r", "--record-delimiter" }, //
+      description = "Record delimiter. Default is Windows-style EOL, '\\r\\n'", //
+      required = false, //
+      order = 50 //
+  )
+  private String recordDelimiter = "\r\n";
 
-    @Parameter(
-      names =  {"-f", "--field-delimiter"},
-      description = "Field delimiter.",
-      required = false,
-      order = 60
-    )
-    private String fieldDelimiter = ",";
+  @Parameter( //
+      names = { "-f", "--field-delimiter" }, //
+      description = "Field delimiter.", //
+      required = false, //
+      order = 60 //
+  )
+  private String fieldDelimiter = ",";
 
-    @Parameter(
-      names =  {"-q", "--quote"},
-      description = "String delimiter (or quote). Must be a single character.",
-      required = false,
-      order = 70
-    )
-    private Character quote = '"';
+  @Parameter( //
+      names = { "-q", "--quote" }, //
+      description = "String delimiter (or quote). Must be a single character.", //
+      required = false, //
+      order = 70 //
+  )
+  private Character quote = '"';
 
-    @Parameter(
-      names =  {"-e", "--escape"},
-      description = "Escape character (for quote character). Must be a single character.",
-      required = false,
-      order = 80
-    )
-    private Character escape = '"';
+  @Parameter( //
+      names = { "-e", "--escape" }, //
+      description = "Escape character (for quote character). Must be a single character.", //
+      required = false, //
+      order = 80 //
+  )
+  private Character escape = '"';
 
-    @Parameter(
-      names =  {"-n", "--nested-attribute-separator"},
-      description = "String used to separate nested attributes in CSV header",
-      required = false,
-      order = 90
-    )
-    private String attributeSeparator = "-";
+  @Parameter( //
+      names = { "-n", "--nested-attribute-separator" }, //
+      description = "String used to separate nested attributes in CSV header", //
+      required = false, //
+      order = 90 //
+  )
+  private String attributeSeparator = "-";
 
-    @Parameter(
-      names =  {"--max-depth"},
-      description = "Max depth for JSON objects inspection",
-      required = false,
-      order = 100
-    )
-    private Integer maxDepth;
+  @Parameter( //
+      names = { "--max-depth" }, //
+      description = "Max depth for JSON objects inspection", //
+      required = false, //
+      order = 100 //
+  )
+  private Integer maxDepth;
 
-    @Parameter(
-      names =  {"--skip-header"},
-      description = "Do not print header",
-      required = false,
-      order = 110
-    )
-    private boolean skipHeader;
+  @Parameter( //
+      names = { "--skip-header" }, //
+      description = "Do not print header", //
+      required = false, //
+      order = 110 //
+  )
+  private boolean skipHeader;
 
-    @Parameter(
-      names =  {"--number-format"},
-      description = "Number format for all numbers",
-      required = false,
-      order = 120
-    )
-    private String numberFormatText = "0.#";
+  @Parameter( //
+      names = { "--number-format" }, //
+      description = "Number format for all numbers", //
+      required = false, //
+      order = 120 //
+  )
+  private String numberFormatText = "0.#";
 
-    @Parameter(
-      names =  {"-l", "--locale"},
-      description = "Locale, eg. en or en_US, to be used for formatting numbers. This is alternative to --number-format.",
-      required = false,
-      order = 130
-    )
-    private String localeText;
+  @Parameter( //
+      names = { "-l", "--locale" }, //
+      description = "Locale, eg. en or en_US, to be used for formatting numbers. This is alternative to --number-format.", //
+      required = false, //
+      order = 130 //
+  )
+  private String localeText;
 
-    private NumberFormat numberFormat;
-    private Locale locale;
+  @Parameter( //
+      names = { "--unix" }, //
+      description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"", //
+      required = false, //
+      order = 140 //
+  )
+  private boolean unix;
 
-    @Parameter(
-      names =  {"--unix"},
-      description = "Output suitable for *NIX pipelines. Equivalent to --skip-header -f \" \" -r \"\\n\" -q \"\" -e \"\"",
-      required = false,
-      order = 140
-    )
-    private boolean unix;
+  @Parameter( //
+      description = "<input JSON files>", //
+      required = true, //
+      variableArity = true //
+  )
+  private List<String> files = new ArrayList<>();
 
-    @Parameter(
-      description = "<input JSON files>",
-      required = true,
-      variableArity = true
-    )
-    private List<String> files = new ArrayList<>();
+  private NumberFormat numberFormat;
+  private Locale locale;
 
-    public String getOutput() {
-        return output;
-    }
+  // ===== Getters and setters ===============================================
 
-    public void setOutput(String output) {
-        this.output = output;
-    }
+  public String getOutput() {
+    return output;
+  }
 
-    public boolean isAppend() {
-        return append;
-    }
+  public void setOutput(String output) {
+    this.output = output;
+  }
 
-    public void setAppend(boolean append) {
-        this.append = append;
-    }
+  public boolean isAppend() {
+    return append;
+  }
 
-    public List<String> getFiles() {
-        return files;
-    }
+  public void setAppend(boolean append) {
+    this.append = append;
+  }
 
-    public void setFiles(List<String> files) {
-        this.files = files;
-    }
+  public List<String> getFiles() {
+    return files;
+  }
 
-    public boolean isHelp() {
-        return help;
-    }
+  public void setFiles(List<String> files) {
+    this.files = files;
+  }
 
-    public void setHelp(boolean help) {
-        this.help = help;
-    }
+  public boolean isHelp() {
+    return help;
+  }
 
-    public String getRecordDelimiter() {
-        return recordDelimiter;
-    }
+  public void setHelp(boolean help) {
+    this.help = help;
+  }
 
-    public void setRecordDelimiter(String recordDelimiter) {
-        this.recordDelimiter = recordDelimiter;
-    }
+  public String getRecordDelimiter() {
+    return recordDelimiter;
+  }
 
-    public String getFieldDelimiter() {
-        return fieldDelimiter;
-    }
+  public void setRecordDelimiter(String recordDelimiter) {
+    this.recordDelimiter = recordDelimiter;
+  }
 
-    public void setFieldDelimiter(String fieldDelimiter) {
-        this.fieldDelimiter = fieldDelimiter;
-    }
+  public String getFieldDelimiter() {
+    return fieldDelimiter;
+  }
 
-    public Character getQuote() {
-        return quote;
-    }
+  public void setFieldDelimiter(String fieldDelimiter) {
+    this.fieldDelimiter = fieldDelimiter;
+  }
 
-    public void setQuote(Character quote) {
-        this.quote = quote;
-    }
+  public Character getQuote() {
+    return quote;
+  }
 
-    public Character getEscape() {
-        return escape;
-    }
+  public void setQuote(Character quote) {
+    this.quote = quote;
+  }
 
-    public void setEscape(Character escape) {
-        this.escape = escape;
-    }
+  public Character getEscape() {
+    return escape;
+  }
 
-    public String getAttributeSeparator() {
-        return attributeSeparator;
-    }
+  public void setEscape(Character escape) {
+    this.escape = escape;
+  }
 
-    public void setAttributeSeparator(String attributeSeparator) {
-        this.attributeSeparator = attributeSeparator;
-    }
+  public String getAttributeSeparator() {
+    return attributeSeparator;
+  }
 
-    public Integer getMaxDepth() {
-        return maxDepth;
-    }
+  public void setAttributeSeparator(String attributeSeparator) {
+    this.attributeSeparator = attributeSeparator;
+  }
 
-    public void setMaxDepth(Integer maxDepth) {
-        this.maxDepth = maxDepth;
-    }
+  public Integer getMaxDepth() {
+    return maxDepth;
+  }
 
-	public boolean isVersion() {
-		return version;
-	}
+  public void setMaxDepth(Integer maxDepth) {
+    this.maxDepth = maxDepth;
+  }
 
-	public void setVersion(boolean version) {
-		this.version = version;
-	}
+  public boolean isVersion() {
+    return version;
+  }
 
-	public boolean isUnix() {
-		return unix;
-	}
+  public void setVersion(boolean version) {
+    this.version = version;
+  }
 
-	public void setUnix(boolean unix) {
-		this.unix = unix;
-	}
+  public boolean isUnix() {
+    return unix;
+  }
 
-	public boolean isSkipHeader() {
-		return skipHeader;
-	}
+  public void setUnix(boolean unix) {
+    this.unix = unix;
+  }
 
-	public void setSkipHeader(boolean skipHeader) {
-		this.skipHeader = skipHeader;
-	}
+  public boolean isSkipHeader() {
+    return skipHeader;
+  }
 
-	public String getNumberFormatText() {
-		return numberFormatText;
-	}
+  public void setSkipHeader(boolean skipHeader) {
+    this.skipHeader = skipHeader;
+  }
 
-	public void setNumberFormatText(String numberFormatText) {
-		this.numberFormatText = numberFormatText == null || numberFormatText.isBlank() ? null : numberFormatText;
-	}
+  public String getNumberFormatText() {
+    return numberFormatText;
+  }
 
-	public NumberFormat getNumberFormat() {
+  public void setNumberFormatText(String numberFormatText) {
+    this.numberFormatText = numberFormatText == null || numberFormatText.isBlank() ? null : numberFormatText;
+  }
+
+  public String getLocaleText() {
+    return localeText;
+  }
+
+  public void setLocaleText(String localeText) {
+    this.localeText = localeText == null || localeText.isBlank() ? null : localeText;
+  }
+
+  // ===== Other methods ===============================================
+
+  /**
+   * Return a NumberFormat object built on <code>localeText</code> or
+   * <code>numberFormatText</code>
+   * 
+   * @return
+   */
+  public NumberFormat getNumberFormat() {
     if (numberFormat == null) {
 
       if (localeText != null && numberFormatText != null) {
@@ -251,25 +270,18 @@ public class Options {
       }
       numberFormat = locale != null ? NumberFormat.getInstance(locale) : new DecimalFormat(numberFormatText);
     }
-		return numberFormat;
-	}
-
-	public String getLocaleText() {
-		return localeText;
-	}
-
-	public void setLocaleText(String localeText) {
-		this.localeText = localeText == null || localeText.isBlank() ? null : localeText;
-	}
+    return numberFormat;
+  }
 
   /**
-   * Return a Locale object built on localeText
+   * Return a Locale object built on <code>localeText</code>
+   * 
    * @return
    */
-	public Locale getLocale() {
+  public Locale getLocale() {
     if (locale == null && localeText != null) {
       locale = new Locale(localeText);
     }
-		return locale;
-	}
+    return locale;
+  }
 }
