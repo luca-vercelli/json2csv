@@ -302,7 +302,34 @@ public class ConverterTest {
         
         setSample("sample-nested-2.json");
         options.setOutput(tempFile.getAbsolutePath());
-        options.setOutputColumns(List.of("data-name"));
+        options.setOutputColumns(List.of("data-name", "boo"));
+
+        converter.run();
+        
+        assertTrue(tempFile.length() > 0);
+
+        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
+        String firstLine = it.nextLine();
+        assertEquals("data-name,boo", firstLine);
+        String line = it.nextLine();
+        assertEquals("foo,", line);
+        line = it.nextLine();
+        assertEquals("x,", line);
+        line = it.nextLine();
+        assertEquals("x,", line);
+        line = it.nextLine();
+        assertEquals("x,", line);
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testE2EOutputColumns2() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-nested-2.json");
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setOutputColumns(List.of("data-name", "aaaaaaa"));
 
         converter.run();
         
