@@ -22,6 +22,7 @@ public class Converter implements Runnable {
 
 	Options options;
 	int rc = 0;
+	JsonUtil jsonUtil = new JsonUtil();
 
 	public Converter(Options options) {
 		this.options = options;
@@ -69,7 +70,7 @@ public class Converter implements Runnable {
 		for (String jsonFileName : options.getFiles()) {
 			JsonValue data;
 			try {
-				data = jsonFromFile(jsonFileName);
+				data = jsonUtil.jsonFromFile(jsonFileName);
 			} catch (FileNotFoundException e) {
 				System.err.println("File does not exist: " + jsonFileName);
 				rc = 1;
@@ -83,16 +84,6 @@ public class Converter implements Runnable {
 			dataAsListOfMaps.addAll(dataAsListOfMapsForFile);
 		}
 		return dataAsListOfMaps;
-	}
-
-	JsonValue jsonFromFile(String filename) throws FileNotFoundException, IOException {
-		JsonValue data = null;
-		try (FileReader fr = new FileReader(filename)) {
-			try (JsonReader jsonReader = Json.createReader(fr)) {
-				data = jsonReader.readValue();
-			}
-		}
-		return data;
 	}
 
 	/**

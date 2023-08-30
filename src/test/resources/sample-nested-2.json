@@ -1,0 +1,12 @@
+{
+    "data": [
+        {
+            "name": "foo",
+            "surname": "bar"
+        },
+        {
+            "name": "x",
+            "value": [ 1,2,3 ]
+        }
+    ]
+}

@@ -2,7 +2,6 @@ package it.json2csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -10,17 +9,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.LinkedHashMap;
-
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -44,20 +36,6 @@ public class ConverterTest {
         URL url = Thread.currentThread().getContextClassLoader().getResource(filename);
         jsonFullFilename = url.getPath();
         options.getFiles().add(jsonFullFilename);
-    }
-
-    @Test
-    public void testJsonFromFile() throws FileNotFoundException, IOException {
-        setSample("sample2.json");
-        JsonValue result = converter.jsonFromFile(jsonFullFilename);
-        assertTrue(result instanceof JsonObject);
-        assertTrue(((JsonObject)result).get("code") instanceof JsonNumber);
-        assertEquals(200, ((JsonNumber)((JsonObject)result).get("code")).intValue());
-        assertTrue(((JsonObject)result).get("status") instanceof JsonString);
-        assertTrue(((JsonObject)result).get("result") instanceof JsonObject);
-        assertTrue(((JsonObject)result).get("canRead").getValueType() == ValueType.TRUE);
-        assertTrue(((JsonObject)result).get("canWrite").getValueType() == ValueType.FALSE);
-        assertTrue(((JsonObject)result).get("owner").getValueType() == ValueType.NULL);
     }
 
     @Test
