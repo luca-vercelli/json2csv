@@ -122,4 +122,41 @@ public class JsonUtilTest {
             // ok
         }
     }
+
+    @Test
+    public void testExclude1() throws FileNotFoundException, IOException {
+        JsonValue value = util.jsonFromFile(getResourceFileName("sample-nested-2.json"));
+        JsonValue result;
+        JsonArray data;
+        
+        assertTrue(value instanceof JsonObject);
+        assertTrue(((JsonObject)value).get("data") instanceof JsonArray);
+        data = (JsonArray) ((JsonObject)value).get("data");
+        assertEquals(2, data.size());
+        assertTrue(data.get(1) instanceof JsonObject);
+        assertNotNull(((JsonObject)data.get(1)).get("value"));
+
+        result = util.removeNode(value, "data/1/value");
+        assertTrue(result instanceof JsonObject);
+        assertTrue(((JsonObject)result).get("data") instanceof JsonArray);
+        data = (JsonArray) ((JsonObject)result).get("data");
+        assertEquals(2, data.size());
+        assertTrue(data.get(1) instanceof JsonObject);
+        assertNull(((JsonObject)data.get(1)).get("value"));
+    }
+
+    @Test
+    public void testExclude2() throws FileNotFoundException, IOException {
+        JsonValue value = util.jsonFromFile(getResourceFileName("sample-nested-2.json"));
+        JsonValue result;
+        JsonArray data;
+
+        result = util.removeNode(value, "data/0/name");
+        assertTrue(result instanceof JsonObject);
+        assertTrue(((JsonObject)result).get("data") instanceof JsonArray);
+        data = (JsonArray) ((JsonObject)result).get("data");
+        assertTrue(data.size() == 2);
+        assertTrue(data.get(0) instanceof JsonObject);
+        assertNull(((JsonObject)(data.get(0))).get("name"));
+    }
 }
