@@ -251,4 +251,26 @@ public class ConverterTest {
         }
     }
 
+    @Test
+    public void testE2ERoot() throws IOException {
+        File tempFile = File.createTempFile("temp-", ".csv");
+        tempFile.deleteOnExit();
+        
+        setSample("sample-nested-2.json");
+        options.setOutput(tempFile.getAbsolutePath());
+        options.setRoot("data[0]");
+
+        converter.run();
+        
+        assertTrue(tempFile.length() > 0);
+
+        //check that columns order is preserved
+        LineIterator it = FileUtils.lineIterator(tempFile, "UTF-8");
+        String firstLine = it.nextLine();
+        assertEquals("name,surname", firstLine);
+        String secondLine = it.nextLine();
+        assertEquals("foo,bar", secondLine);
+        assertFalse(it.hasNext());
+    }
+
 }

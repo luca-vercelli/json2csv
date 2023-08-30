@@ -1,7 +1,6 @@
 package it.json2csv;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
@@ -71,6 +68,9 @@ public class Converter implements Runnable {
 			JsonValue data;
 			try {
 				data = jsonUtil.jsonFromFile(jsonFileName);
+				if (options.getRoot() != null && !options.getRoot().isBlank()) {
+					data = jsonUtil.getRoot(data, options.getRoot());
+				}
 			} catch (FileNotFoundException e) {
 				System.err.println("File does not exist: " + jsonFileName);
 				rc = 1;
