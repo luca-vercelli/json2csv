@@ -49,7 +49,6 @@ A number of options is supported, you can list them with
             Default: false
         --number-format
             Number format for all numbers
-            Default: 0.#
         -l, --locale
             Locale, eg. en or en_US, to be used for formatting numbers. This is
             alternative to --number-format.
