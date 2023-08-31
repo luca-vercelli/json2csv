@@ -1,7 +1,7 @@
 #something's wrong here
 
-usr/share/maven-repo/it/json2csv/json2csv/1.0/json2csv-1.0.jar usr/share/java/json2csv-1.0.jar
-usr/share/java/json2csv-1.0.jar usr/share/java/json2csv.jar
+usr/share/maven-repo/it/json2csv/json2csv/1.1/json2csv-1.1.jar usr/share/java/json2csv-1.1.jar
+usr/share/java/json2csv-1.1.jar usr/share/java/json2csv.jar
 
 #binary alias
 usr/lib/json2csv.sh usr/bin/json2csv
