@@ -1,3 +1,10 @@
+json2csv (1.1) unstable; urgency=medium
+
+  * More options
+  * Some bugfix
+
+ -- Luca Vercelli <luca.vercelli.to@gmail.com>  Thu, 31 Aug 2023 09:00:00 +0100
+
 json2csv (1.0) unstable; urgency=medium
 
   * Initial release
