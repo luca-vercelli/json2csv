@@ -100,11 +100,11 @@ public class Options {
 
   @Parameter( //
       names = { "--number-format" }, //
-      description = "Number format for all numbers", //
+      description = "Number format for all numbers, es. #,##0.00", //
       required = false, //
       order = 120 //
   )
-  private String numberFormatText = "0.#";
+  private String numberFormatText;
 
   @Parameter( //
       names = { "-l", "--locale" }, //
@@ -311,12 +311,11 @@ public class Options {
    * @return
    */
   public NumberFormat getNumberFormat() {
-    if (numberFormat == null) {
-
+    if (numberFormat == null && (localeText != null || numberFormatText != null)) {
       if (localeText != null && numberFormatText != null) {
         System.err.println("Warning! You should only pass one among --locale and --number-format");
       }
-      numberFormat = locale != null ? NumberFormat.getInstance(locale) : new DecimalFormat(numberFormatText);
+      numberFormat = localeText != null ? NumberFormat.getInstance(getLocale()) : new DecimalFormat(numberFormatText);
     }
     return numberFormat;
   }

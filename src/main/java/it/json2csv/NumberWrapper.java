@@ -14,7 +14,7 @@ public class NumberWrapper extends Number {
     private Number x;
 
     /**
-     * NumberFormat used to format this Number
+     * NumberFormat used to format this Number. Can be null.
      */
     private NumberFormat nf;
 
@@ -25,8 +25,6 @@ public class NumberWrapper extends Number {
         if (x == null)
             throw new NullPointerException("given null Number");
         this.x = x;
-        if (nf == null)
-            throw new NullPointerException("given null NumberFormat");
         this.nf = nf; // can be null
     }
 
@@ -72,6 +70,6 @@ public class NumberWrapper extends Number {
      */
     @Override
     public String toString() {
-        return nf.format(x);
+        return nf != null ? nf.format(x) : x.toString();
     }
 }
