@@ -20,6 +20,7 @@ public class Options {
 
   @Parameter( //
       names = { "-v", "--version" }, //
+      help = true, //
       description = "Print program version and exit", //
       required = false, //
       order = 20 //
