@@ -1,0 +1,78 @@
+.\" Manpage for json2csv.
+.\" Contact luca.vercelli.to@gmail.com to correct errors or typos.
+.TH man 1 "08 Sep 2023" "1.1" "json2csv man page"
+.SH NAME
+json2csv \- convert one or more files from JSON to CSV format 
+.SH SYNOPSIS
+json2csv [options] <filenames>
+.SH DESCRIPTION
+Take one or more JSON files and convert all of them into a single CSV file.
+All object attributes become columns in target file.
+Arrays inside the JSON's force the CSV rows to be multiplied. 
+.SH OPTIONS
+.TP
+.BR        -h, --help
+Displays help information and exit
+.TP
+.BR        -v, --version
+Print program version and exit
+.TP
+.BR        -o, --output
+Output file. If none, output will be echoed to stdout
+.TP
+.BR        -a, --append
+Append to output file instead of overwrite.
+Default: false
+.TP
+.BR        -r, --record-delimiter
+Record delimiter. Default is Windows-style EOL \\r\\n
+.TP
+.BR        -f, --field-delimiter
+Field delimiter.
+Default: ,
+.TP
+.BR        -q, --quote
+String delimiter (or quote). Must be a single character.
+Default: "
+.TP
+.BR       -e, --escape
+Escape character (for quote character). Must be a single character.
+Default: "
+.TP
+.BR       -n, --nested-attribute-separator
+String used to separate nested attributes in CSV header
+Default: -
+.TP
+.BR        --max-depth
+Max depth for JSON objects inspection
+.TP
+.BR        --skip-header
+Do not print header
+Default: false
+.TP
+.BR        --number-format
+Number format for all numbers
+.TP
+.BR        -l, --locale
+Locale, eg. en or en_US, to be used for formatting numbers. This is
+alternative to --number-format.
+See e.g. https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
+.TP
+.BR        --unix
+Output suitable for *NIX pipelines. Equivalent to --skip-header -f " "
+-r "\n" -q "" -e ""
+.TP
+.BR        -x, --exclude
+Comma separated list of nodes to exclude. Path expressed in form 
+aaa/bbb/2/ccc. Use star instead of number to denote all array elements.
+.TP
+.BR        --root
+JSON root node. Path expressed in form aaa/bbb/2/ccc
+.TP
+.BR        -k, --filter-columns
+List of columns as they will appear in output file
+
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Luca Vercelli (luca.vercelli.to@gmail.com)

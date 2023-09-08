@@ -1,3 +1,8 @@
 # how can I rename a file???
 
 debian/json2csv.sh usr/lib/
+
+manpage/json2csv.1 usr/share/man/man1
+
+# how to gzip manpage?
+
