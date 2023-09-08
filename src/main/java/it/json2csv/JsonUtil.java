@@ -117,10 +117,11 @@ public class JsonUtil {
             }
             return builder.build();
         } else if (value instanceof JsonArray) {
-            int index = Integer.valueOf(nodePath.get(0));
+            boolean star = "*".equals(nodePath.get(0));
+            int index = star ? -1 : Integer.valueOf(nodePath.get(0));
             JsonArrayBuilder builder = Json.createArrayBuilder();
             for (int i = 0; i < ((JsonArray)value).size(); ++i) {
-                if (i != index) {
+                if (!star && i != index) {
                     builder.add(((JsonArray)value).get(i));
                 } else if (nodePath.size() > 1) {
                     List<String> morePaths = new LinkedList<>(nodePath);

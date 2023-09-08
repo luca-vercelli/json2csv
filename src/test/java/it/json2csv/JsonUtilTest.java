@@ -158,5 +158,22 @@ public class JsonUtilTest {
         assertTrue(data.size() == 2);
         assertTrue(data.get(0) instanceof JsonObject);
         assertNull(((JsonObject)(data.get(0))).get("name"));
+        assertNotNull(((JsonObject)(data.get(1))).get("name"));
+    }
+
+    @Test
+    public void testExcludeStar() throws FileNotFoundException, IOException {
+        JsonValue value = util.jsonFromFile(getResourceFileName("sample-nested-array.json"));
+        JsonValue result;
+        JsonArray data;
+
+        result = util.removeNode(value, "data/*/name");
+        assertTrue(result instanceof JsonObject);
+        assertTrue(((JsonObject)result).get("data") instanceof JsonArray);
+        data = (JsonArray) ((JsonObject)result).get("data");
+        assertTrue(data.size() == 2);
+        assertTrue(data.get(0) instanceof JsonObject);
+        assertNull(((JsonObject)(data.get(0))).get("name"));
+        assertNull(((JsonObject)(data.get(1))).get("name"));
     }
 }

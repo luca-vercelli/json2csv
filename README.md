@@ -57,7 +57,7 @@ A number of options is supported, you can list them with
             -r "\n" -q "" -e ""
         -x, --exclude
             Comma separated list of nodes to exclude. Path expressed in form 
-            aaa/bbb/2/ccc 
+            aaa/bbb/2/ccc. Use star instead of number to denote all array elements.
         --root
             JSON root node. Path expressed in form aaa/bbb/2/ccc
         -k, --filter-columns

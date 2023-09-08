@@ -117,7 +117,7 @@ public class Options {
 
   @Parameter( //
       names = { "-x", "--exclude" }, //
-      description = "Comma separated list of nodes to exclude. Path expressed in form aaa/bbb/2/ccc", //
+      description = "Comma separated list of nodes to exclude. Path expressed in form aaa/bbb/2/ccc. Use star instead of number to denote all array elements.", //
       required = false, //
       order = 140 //
   )
