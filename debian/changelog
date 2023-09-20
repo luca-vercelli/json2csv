@@ -1,6 +1,7 @@
 json2csv (1.2) unstable; urgency=medium
 
   * Star option
+  * man page
 
  -- Luca Vercelli <luca.vercelli.to@gmail.com>  Fri, 08 Sep 2023 20:00:00 +0100
 
