@@ -176,4 +176,26 @@ public class JsonUtilTest {
         assertNull(((JsonObject)(data.get(0))).get("name"));
         assertNull(((JsonObject)(data.get(1))).get("name"));
     }
+
+    @Test
+    public void testOAA() throws FileNotFoundException, IOException {
+        JsonValue value = util.jsonFromFile(getResourceFileName("sample-oaa.json"));
+        JsonValue result;
+        JsonArray data;
+
+        result = util.oaa(value, "data", "key", "value");
+        assertTrue(result instanceof JsonObject);
+        assertTrue(((JsonObject)result).get("data") instanceof JsonArray);
+        data = (JsonArray) ((JsonObject)result).get("data");
+        assertTrue(data.size() == 3);
+        assertTrue(data.get(0) instanceof JsonObject);
+        
+        assertNotNull(((JsonObject)(data.get(0))).get("name"));
+        assertNotNull(((JsonObject)(data.get(0))).get("key"));
+        assertEquals("\"goofy\"", ((JsonObject)(data.get(0))).get("key").toString());
+
+        assertNotNull(((JsonObject)(data.get(2))).get("name"));
+        assertNotNull(((JsonObject)(data.get(2))).get("key"));
+        assertEquals("\"donald\"", ((JsonObject)(data.get(2))).get("key").toString());
+    }
 }

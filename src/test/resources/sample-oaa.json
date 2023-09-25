@@ -1,0 +1,19 @@
+{
+    "data": {
+        "goofy":
+        {
+            "name": "foo",
+            "surname": "bar"
+        },
+        "mickey":
+        {
+            "name": "foo1",
+            "surname": "bar1"
+        },
+        "donald":
+        {
+            "name": "foo2",
+            "surname": "bar2"
+        }
+    }
+}

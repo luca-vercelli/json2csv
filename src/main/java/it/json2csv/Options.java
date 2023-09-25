@@ -148,6 +148,14 @@ public class Options {
   private boolean unix;
 
   @Parameter( //
+      names = { "--oaa", "--objects-as-arrays" }, //
+      description = "Comma separated list of object nodes that should be considered arrays", //
+      required = false, //
+      order = 170 //
+  )
+  private List<String> oaa;
+
+  @Parameter( //
       description = "<input JSON files>", //
       required = true, //
       variableArity = true //
