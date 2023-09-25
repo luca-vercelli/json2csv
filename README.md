@@ -62,3 +62,5 @@ A number of options is supported, you can list them with
             JSON root node. Path expressed in form aaa/bbb/2/ccc
         -k, --filter-columns
             List of columns as they will appear in output file
+        --oaa, --objects-as-arrays
+            Comma separated list of object nodes that should be considered arrays

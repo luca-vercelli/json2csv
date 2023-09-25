@@ -71,6 +71,11 @@ JSON root node. Path expressed in form aaa/bbb/2/ccc
 .TP
 .BR        -k, --filter-columns
 List of columns as they will appear in output file
+.TP
+.BR        --oaa, --objects-as-arrays
+Comma separated list of object nodes that should be considered arrays.
+Sometimes a JSON object {'aa' : {...}, 'bb' : {...}} is used to denote a hash map,
+so in CSV you may want to translate it into an array [{'key':'aa',...},{'key':'bb',...}].
 
 .SH BUGS
 No known bugs.

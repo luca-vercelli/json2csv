@@ -311,6 +311,14 @@ public class Options {
     this.outputColumns = outputColumns;
   }
 
+  public List<String> getOaa() {
+    return oaa;
+  }
+
+  public void setOaa(List<String> oaa) {
+    this.oaa = oaa;
+  }
+
   // ===== Other methods ===============================================
 
   /**

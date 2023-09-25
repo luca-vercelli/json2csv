@@ -86,6 +86,13 @@ public class Converter implements Runnable {
 				for (String path: options.getExclude())
 					data = jsonUtil.removeNode(data, path);
 			}
+
+			if (options.getOaa() != null && !options.getOaa().isEmpty()) {
+				for (String path: options.getOaa()) {
+					// FIXME: name clash possible
+					data = jsonUtil.oaa(data, path, "_key_", "value");
+				}
+			}
 			List<LinkedHashMap<String, Object>> dataAsListOfMapsForFile = json2list(data);
 			dataAsListOfMaps.addAll(dataAsListOfMapsForFile);
 		}
