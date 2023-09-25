@@ -12,20 +12,20 @@ Arrays inside the JSON's force the CSV rows to be multiplied.
 .SH OPTIONS
 .TP
 .BR        -h, --help
-Displays help information and exit
+Displays help information and exit.
 .TP
 .BR        -v, --version
 Print program version and exit
 .TP
 .BR        -o, --output
-Output file. If none, output will be echoed to stdout
+Output file. If none, output will be echoed to stdout.
 .TP
 .BR        -a, --append
 Append to output file instead of overwrite.
 Default: false
 .TP
 .BR        -r, --record-delimiter
-Record delimiter. Default is Windows-style EOL \\r\\n
+Record delimiter. Default is Windows-style EOL \\r\\n.
 .TP
 .BR        -f, --field-delimiter
 Field delimiter.
@@ -40,27 +40,27 @@ Escape character (for quote character). Must be a single character.
 Default: "
 .TP
 .BR       -n, --nested-attribute-separator
-String used to separate nested attributes in CSV header
+String used to separate nested attributes in CSV header.
 Default: -
 .TP
 .BR        --max-depth
-Max depth for JSON objects inspection
+Max depth for JSON objects inspection.
 .TP
 .BR        --skip-header
-Do not print header
+Do not print header.
 Default: false
 .TP
 .BR        --number-format
-Number format for all numbers
+Number format for all numbers.
+See e.g. https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html for syntax.
 .TP
 .BR        -l, --locale
 Locale, eg. en or en_US, to be used for formatting numbers. This is
 alternative to --number-format.
-See e.g. https://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
 .TP
 .BR        --unix
 Output suitable for *NIX pipelines. Equivalent to --skip-header -f " "
--r "\n" -q "" -e ""
+-r "\\n" -q "" -e ""
 .TP
 .BR        -x, --exclude
 Comma separated list of nodes to exclude. Path expressed in form 
@@ -70,7 +70,7 @@ aaa/bbb/2/ccc. Use * instead of number to denote all array elements.
 JSON root node. Path expressed in form aaa/bbb/2/ccc
 .TP
 .BR        -k, --filter-columns
-List of columns as they will appear in output file
+List of columns as they will appear in output file.
 .TP
 .BR        --oaa, --objects-as-arrays
 Comma separated list of object nodes that should be considered arrays.
